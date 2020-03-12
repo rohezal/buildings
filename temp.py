@@ -4,7 +4,12 @@ import csv
 import statistics
 import ephem
 import datetime
+from ephem import cities
 
+sunrises = {}
+sunsets = {}
+
+timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
 
 def average(input):
     sum = 0.0
@@ -13,20 +18,42 @@ def average(input):
     sum = sum / len(input)        
     return sum
 
-def isTheSunShining(mydate, mytime):
-    braunschweig = ephem.Observer()
-    braunschweig.date = mydate
-    braunschweig.lat, braunschweig.lon = '52.155738', '10.313623'
-    
-    floatime = braunschweig.next_rising(ephem.Sun())
-    edate = ephem.Date(floatime)
-    sunrise = edate.datetime().time()
+def cachedIsTheSunShining(mydate, mytime):
     giventime = datetime.datetime.strptime(mytime, '%H:%M').time()
- 
-    if giventime < sunrise:
-        return False
-    else:
+
+    if giventime > sunrises[mydate] and giventime < sunsets[mydate]:
         return True
+    else:
+        return False
+
+    
+def isTheSunShining(mydate, mytime):
+    #braunschweig = ephem.Observer()
+    #braunschweig.date = mydate
+    #braunschweig.lat = '52.155738'
+    #braunschweig.lon = '10.313623'
+    #braunschweig.elevation=75
+    braunschweig = ephem.cities.city("Berlin")
+    
+    floatime_rise = braunschweig.next_rising(ephem.Sun())
+    floatime_set = braunschweig.next_setting(ephem.Sun())
+    
+    
+    edate = ephem.Date(floatime_rise)
+    edate_set = ephem.Date(floatime_set)
+    sunrise = (edate.datetime() + datetime.timedelta(hours=timezone_delta)).time()
+    sunset = (edate_set.datetime() + datetime.timedelta(hours=timezone_delta)).time()
+    
+    giventime = datetime.datetime.strptime(mytime, '%H:%M').time()
+    
+    sunrises[mydate] = sunrise
+    sunsets[mydate] = sunset
+    
+   
+    if giventime > sunrise and giventime < sunset:
+        return True
+    else:
+        return False
     
     
 
@@ -75,7 +102,28 @@ with open('yearly.csv') as csv_file:
     
     #isTheSunShining("2012/1/1", "07:30")
     print("======================================================")
+    print(isTheSunShining("2020/3/12", "4:30"))
+    print(isTheSunShining("2020/3/12", "7:30"))
+    print(isTheSunShining("2020/3/12", "20:30"))
     print(isTheSunShining("2012/1/1", "7:30"))
     print(isTheSunShining("2012/1/1", "6:20"))
+    
+    print("======================================================")
+
+    print(cachedIsTheSunShining("2020/3/12", "4:30"))
+    print(cachedIsTheSunShining("2020/3/12", "7:30"))
+    print(cachedIsTheSunShining("2020/3/12", "20:30"))
+
+    print(str(sunrises["2020/3/12"]) + " " + str(sunsets["2020/3/12"]))
+    
+    print("======================================================")
+    sunrises['big'] = datetime.datetime.strptime("8:00", '%H:%M').time()
+    sunrises['small'] = datetime.datetime.strptime("7:00", '%H:%M').time()
+    print("Test")
+    print(sunrises["2012/1/1"] < sunrises['big'] )
+    print(sunrises["2012/1/1"] < sunrises['small'] )
+    
+    
+    
     
     
