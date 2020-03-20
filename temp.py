@@ -6,10 +6,48 @@ import ephem
 import datetime
 from ephem import cities
 
-sunrises = {}
-sunsets = {}
+sunrises = {} #dictonary to lookup when the sun rises
+sunsets = {} #dictonary to lookup when the sun sets
 
+datalist = [] #list of csv with calculated future
+
+INITVALUE = -666999
 timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
+
+class FeatureData:
+    def __init__(self, data):
+        datestring = data[0] #take the first row and assume it is date and time. e.g. 1.1.2020 19:30 
+        self.date = datestring.split()[0] #split the date part. 1.1.2020 19:30 -> 1.1.2020
+        self.time = datestring.split()[1] #split the time part. 1.1.2020 19:30 -> 19:30
+        self.rowdata = data[1:] #take each row after the first one, since the first one is date and time
+        self.sunIsShining=False
+        self.day_median=INITVALUE
+        self.sunup_median=INITVALUE
+        self.sundown_median=INITVALUE
+        self.sunup_minus_sundown=INITVALUE
+        self.sunup_to_sundown=INITVALUE
+        self.day_median_to_sunup=INITVALUE
+        self.day_median_to_down=INITVALUE
+        self.day_median_minus_down=INITVALUE
+        self.day_median_minus_sunup=INITVALUE
+        self.day_avg = INITVALUE
+        self.sunup_avg= INITVALUE
+        self.sundown_avg= INITVALUE
+        self.month=""
+        self.heating_period=False
+        self.outside_temperature=INITVALUE
+        
+    def calculateIfSunIsShining(self):
+        self.sunIsShining=cachedIsTheSunShining(self.date, self.time)
+        #self.sunIsShining=isTheSunShining(self.date, self.time)
+        
+#def loadCSVAndComputeSunrise(filename):
+    
+        
+#def calculateFeatures(datapoints):
+    
+            
+        
 
 def average(input):
     sum = 0.0
@@ -25,7 +63,24 @@ def cachedIsTheSunShining(mydate, mytime):
         return True
     else:
         return False
+    
+def fillCache(csv_reader):
+    lastdate = "" 
+    for row in csv_reader:
+        datalist.append(FeatureData(row))
+        newdate = row[0].split()[0]
+                
+        if(newdate != lastdate):
+            isTheSunShining(newdate,"0:00")
+            lastdate = newdate
+            #print (newdate)
+            
 
+    for datapoint in datalist:
+        datapoint.calculateIfSunIsShining()
+
+
+        
     
 def isTheSunShining(mydate, mytime):
     #braunschweig = ephem.Observer()
@@ -57,8 +112,11 @@ def isTheSunShining(mydate, mytime):
     
     
 
-class PreProcessingResults:
-    row_temp = [] 
+
+    
+with open('BRICS.csv') as csv_file_brics:    
+    csv_reader_brics = csv.reader(csv_file_brics, delimiter=',')
+    fillCache(csv_reader_brics)
 
 with open('yearly.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
