@@ -5,6 +5,10 @@ import statistics
 import ephem
 import datetime
 from ephem import cities
+import featurecalculation
+import pandas
+
+
 
 sunrises = {} #dictonary to lookup when the sun rises
 sunsets = {} #dictonary to lookup when the sun sets
@@ -24,6 +28,7 @@ dayValues = ValueContainer()
         
 class FeatureData:
     def __init__(self, data):
+        #datestring = data[0].replace("\"", "") #take the first row and assume it is date and time. e.g. 1.1.2020 19:30 
         datestring = data[0] #take the first row and assume it is date and time. e.g. 1.1.2020 19:30 
         self.date = datestring.split()[0] #split the date part. 1.1.2020 19:30 -> 1.1.2020
         self.time = datestring.split()[1] #split the time part. 1.1.2020 19:30 -> 19:30
@@ -102,6 +107,9 @@ class FeatureData:
         for row in day_buffer_sundown_list:
             for i in range(len(row)):
                 sundown_features[i].append(row[i])
+                
+        #print (day_features)
+        median_for_lists(day_features)
     
         #print(day_buffer_list);
         
@@ -142,7 +150,7 @@ def upper_median_for_lists(medianlist, offset = None):
     for element in medianlist:
         temp = element.copy()
         temp.sort()
-        print (temp)
+        #print (temp)
         returnlist.append(temp[-offset])
     return returnlist
 
@@ -173,6 +181,7 @@ def cachedIsTheSunShining(mydate, mytime):
 def loadCSVDataAndFillCaches(csv_reader):
     lastdate = "" 
     for row in csv_reader:
+        row[0] = row[0].replace("\"", "")
         datalist.append(FeatureData(row))
         newdate = row[0].split()[0]
                 
@@ -220,19 +229,13 @@ def isTheSunShining(mydate, mytime):
 
 
     
-with open('BRICS.csv') as csv_file_brics:    
-    csv_reader_brics = csv.reader(csv_file_brics, delimiter=',')
+with open('converted_BRICS.csv') as csv_file_brics:    
+    csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
+    #csv_reader_brics = pandas.read_csv(csv_file_brics, delimiter=",", decimal=",")
+
     loadCSVDataAndFillCaches(csv_reader_brics)
     
     FeatureData.calculateFeatures(datalist)
-    
-    
-    
-    
-    
-    
-    
-    
     
 
 with open('yearly.csv') as csv_file:
@@ -243,7 +246,7 @@ with open('yearly.csv') as csv_file:
     
     for row in csv_reader:
         if counter == 0:
-            print(row[-1])
+            #print(row[-1])
             counter = counter + 1
             continue
         #print (row[-1])
