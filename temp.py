@@ -14,6 +14,14 @@ datalist = [] #list of csv with calculated future
 INITVALUE = -666999
 timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
 
+class ValueContainer:
+    def __init__(self):
+        median_for_a_day = {}
+        median_for_a_day_sunup= {}
+        median_for_a_day_sundown= {}
+        
+dayValues = ValueContainer()        
+        
 class FeatureData:
     def __init__(self, data):
         datestring = data[0] #take the first row and assume it is date and time. e.g. 1.1.2020 19:30 
@@ -33,21 +41,119 @@ class FeatureData:
         self.day_avg = INITVALUE
         self.sunup_avg= INITVALUE
         self.sundown_avg= INITVALUE
+        self.avg_sunup_minus_sundown= INITVALUE
+        self.avg_minus_sunup= INITVALUE
+        self.avg_minus_sundown= INITVALUE
+        
         self.month=""
         self.heating_period=False
         self.outside_temperature=INITVALUE
+        self.my_own_feature=INITVALUE
         
     def calculateIfSunIsShining(self):
         self.sunIsShining=cachedIsTheSunShining(self.date, self.time)
         #self.sunIsShining=isTheSunShining(self.date, self.time)
         
+    def calculateFeatures(datapoints):
+        currentdate = datapoints[0].date
+        day_buffer_list = []
+        day_buffer_sunrise_list = []
+        day_buffer_sunset_list = []
+        
+
+
+        for i in range(len(datapoints)):
+            if (currentdate != datapoints[i].date):
+                currentdate = datapoints[i].date
+                FeatureData.helperCalculateFeatures(day_buffer_list,day_buffer_sunrise_list,day_buffer_sunset_list)
+                day_buffer_list.clear()
+                day_buffer_sunrise_list.clear()
+                day_buffer_sunset_list.clear()
+                #print (currentdate)
+
+            day_buffer_list.append(datapoints[i].rowdata)
+            if(datapoints[i].sunIsShining == True):
+                day_buffer_sunrise_list.append(datapoints[i].rowdata)
+            else:
+                day_buffer_sunset_list.append(datapoints[i].rowdata)
+              
+        
+    def helperCalculateFeatures(day_buffer_list,day_buffer_sunup_list,day_buffer_sundown_list):
+        
+        #we have the data in this format t_in, t_out, p_in,p_out per datapoint. now we need the value for all datapoints of a day
+        number_of_values_per_row =len(day_buffer_list[0]) #the number of different values per row is the same
+        day_features = []
+        sunup_features = []
+        sundown_features = []
+        
+        for i in range(number_of_values_per_row):
+            day_features.append([]) #add a list for each column
+            sunup_features.append([]) #add a list for each column
+            sundown_features.append([]) #add a list for each column
+            
+        for row in day_buffer_list:
+            for i in range(len(row)):
+                day_features[i].append(row[i])
+
+        for row in day_buffer_sunup_list:
+            for i in range(len(row)):
+                sunup_features[i].append(row[i])
+
+        for row in day_buffer_sundown_list:
+            for i in range(len(row)):
+                sundown_features[i].append(row[i])
+    
+        #print(day_buffer_list);
+        
+    def exportToCSV(datapoints):
+        print("implement me")
 #def loadCSVAndComputeSunrise(filename):
     
         
 #def calculateFeatures(datapoints):
     
-            
+def median_for_lists(input):
+    returnlist = []
+
+    for element in input:
+        returnlist.append(statistics.median(element))
+
+    return returnlist
+
+def lower_median_for_lists(medianlist, offset = None):
+    if(offset == None):
+        offset = int(len(medianlist)/50)
+
+    returnlist = []
+    for element in medianlist:
+        temp = element.copy()
+        temp.sort()
+        returnlist.append(temp[offset])
+    return returnlist
+
+def upper_median_for_lists(medianlist, offset = None):
+    if(offset == None):
+        offset = 1+int(len(medianlist)/50)
+    else:
+        offset = offset+1        
+          
         
+    returnlist = []
+    for element in medianlist:
+        temp = element.copy()
+        temp.sort()
+        print (temp)
+        returnlist.append(temp[-offset])
+    return returnlist
+
+
+def average_for_lists(input):
+    returnlist = []
+
+    for element in input:
+        returnlist.append(average(element))
+
+    return returnlist        
 
 def average(input):
     sum = 0.0
@@ -64,7 +170,7 @@ def cachedIsTheSunShining(mydate, mytime):
     else:
         return False
     
-def fillCache(csv_reader):
+def loadCSVDataAndFillCaches(csv_reader):
     lastdate = "" 
     for row in csv_reader:
         datalist.append(FeatureData(row))
@@ -116,7 +222,18 @@ def isTheSunShining(mydate, mytime):
     
 with open('BRICS.csv') as csv_file_brics:    
     csv_reader_brics = csv.reader(csv_file_brics, delimiter=',')
-    fillCache(csv_reader_brics)
+    loadCSVDataAndFillCaches(csv_reader_brics)
+    
+    FeatureData.calculateFeatures(datalist)
+    
+    
+    
+    
+    
+    
+    
+    
+    
 
 with open('yearly.csv') as csv_file:
     csv_reader = csv.reader(csv_file, delimiter=',')
