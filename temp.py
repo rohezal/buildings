@@ -22,6 +22,9 @@ class ValueContainer:
         self.median_for_a_day = {}
         self.median_for_a_day_sunup= {}
         self.median_for_a_day_sundown= {}
+        self.average_for_a_day = {}
+        self.average_for_a_day_sunup= {}
+        self.average_for_a_day_sundown= {}
         
 dayValues = ValueContainer()        
         
@@ -33,25 +36,26 @@ class FeatureData:
         self.time = datestring.split()[1] #split the time part. 1.1.2020 19:30 -> 19:30
         self.rowdata = data[1:] #take each row after the first one, since the first one is date and time
         self.sunIsShining=False
-        self.day_median=INITVALUE
-        self.sunup_median=INITVALUE
-        self.sundown_median=INITVALUE
-        self.sunup_minus_sundown=INITVALUE
-        self.sunup_to_sundown=INITVALUE
-        self.day_median_to_sunup=INITVALUE
-        self.day_median_to_down=INITVALUE
-        self.day_median_minus_down=INITVALUE
-        self.day_median_minus_sunup=INITVALUE
-        self.day_avg = INITVALUE
-        self.sunup_avg= INITVALUE
-        self.sundown_avg= INITVALUE
-        self.avg_sunup_minus_sundown= INITVALUE
-        self.avg_minus_sunup= INITVALUE
-        self.avg_minus_sundown= INITVALUE
-        
-        self.month=""
         self.heating_period=False
         self.outside_temperature=INITVALUE
+        
+        self.day_median=[]
+        self.sunup_median=[]
+        self.sundown_median=[]
+        self.sunup_minus_sundown=[]
+        self.sunup_to_sundown=[]
+        self.day_median_to_sunup=[]
+        self.day_median_to_down=[]
+        self.day_median_minus_down=[]
+        self.day_median_minus_sunup=[]
+        self.day_avg = []
+        self.sunup_avg= []
+        self.sundown_avg= []
+        self.avg_sunup_minus_sundown= []
+        self.avg_minus_sunup= []
+        self.avg_minus_sundown= []
+
+        self.month=""
         self.my_own_feature=INITVALUE
         
     def calculateIfSunIsShining(self):
@@ -113,8 +117,24 @@ class FeatureData:
         
         
         dayValues.median_for_a_day[date] = featurecalculation.median_for_lists(day_features)
+        dayValues.median_for_a_day_sunup[date] = featurecalculation.median_for_lists(sunup_features)
+        dayValues.median_for_a_day_sundown[date] = featurecalculation.median_for_lists(sundown_features)
+        
+        dayValues.average_for_a_day[date] = featurecalculation.average_for_lists(day_features)
+        dayValues.average_for_a_day_sunup[date] = featurecalculation.average_for_lists(sunup_features)
+        dayValues.average_for_a_day_sundown[date] = featurecalculation.average_for_lists(sundown_features)
     
         #print(day_buffer_list);
+        
+    def dateToMonth(date):
+        date = date
+    def dateToHeating(date):
+        date=date
+        
+    def copyFeaturesFromDictonaryToFeatureData(datapoints):
+        for point in datapoints:
+            point.day_median = dayValues.median_for_a_day[point.date]
+        
         
     def exportToCSV(datapoints):
         print("implement me")
