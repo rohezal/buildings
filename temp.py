@@ -6,7 +6,6 @@ import ephem
 import datetime
 from ephem import cities
 import featurecalculation
-import pandas
 
 
 
@@ -20,9 +19,9 @@ timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
 
 class ValueContainer:
     def __init__(self):
-        median_for_a_day = {}
-        median_for_a_day_sunup= {}
-        median_for_a_day_sundown= {}
+        self.median_for_a_day = {}
+        self.median_for_a_day_sunup= {}
+        self.median_for_a_day_sundown= {}
         
 dayValues = ValueContainer()        
         
@@ -69,11 +68,11 @@ class FeatureData:
 
         for i in range(len(datapoints)):
             if (currentdate != datapoints[i].date):
-                currentdate = datapoints[i].date
-                FeatureData.helperCalculateFeatures(day_buffer_list,day_buffer_sunrise_list,day_buffer_sunset_list)
+                FeatureData.helperCalculateFeatures(currentdate, day_buffer_list,day_buffer_sunrise_list,day_buffer_sunset_list)
                 day_buffer_list.clear()
                 day_buffer_sunrise_list.clear()
                 day_buffer_sunset_list.clear()
+                currentdate = datapoints[i].date
                 #print (currentdate)
 
             day_buffer_list.append(datapoints[i].rowdata)
@@ -83,7 +82,7 @@ class FeatureData:
                 day_buffer_sunset_list.append(datapoints[i].rowdata)
               
         
-    def helperCalculateFeatures(day_buffer_list,day_buffer_sunup_list,day_buffer_sundown_list):
+    def helperCalculateFeatures(date, day_buffer_list,day_buffer_sunup_list,day_buffer_sundown_list):
         
         #we have the data in this format t_in, t_out, p_in,p_out per datapoint. now we need the value for all datapoints of a day
         number_of_values_per_row =len(day_buffer_list[0]) #the number of different values per row is the same
@@ -108,8 +107,12 @@ class FeatureData:
             for i in range(len(row)):
                 sundown_features[i].append(row[i])
                 
+                
+                
         #print (day_features)
-        median_for_lists(day_features)
+        
+        
+        dayValues.median_for_a_day[date] = featurecalculation.median_for_lists(day_features)
     
         #print(day_buffer_list);
         
@@ -227,6 +230,8 @@ def isTheSunShining(mydate, mytime):
     
     
 
+
+featurecalculation.unit_test()
 
     
 with open('converted_BRICS.csv') as csv_file_brics:    

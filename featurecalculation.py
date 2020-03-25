@@ -108,44 +108,44 @@ def upper_average_list(input, offset = None):
     return returnlist
     
 
+def unit_test():
 
-
-#day_buffer_list = [ [1,2,3,4,5,6], [1,2,3,4,5,6], [1,2,3,4,5,6], [1,2,3,4,5,6], [10,2*2,3*3,4*4,5*5,6*6], [-1,-2,-3,-4,-5,-6] ]
-#day_buffer_sunup_list = [ [1,2,3,4,5,6], [1,2,3,4,5,6], [-1,-2,-3,-4,-5,-6] ]
-#day_buffer_sundown_list = [ [1,2,3,4,5,6], [1,2,3,4,5,6], [-1,-2,-3,-4,-5,-6] ]
+    day_buffer_list = [ [1,2,3,4,5,6], [1,2,3,4,5,6], [1,2,3,4,5,6], [1,2,3,4,5,6], [10,2*2,3*3,4*4,5*5,6*6], [-1,-2,-3,-4,-5,-6] ]
+    day_buffer_sunup_list = [ [1,2,3,4,5,6], [1,2,3,4,5,6], [-1,-2,-3,-4,-5,-6] ]
+    day_buffer_sundown_list = [ [1,2,3,4,5,6], [1,2,3,4,5,6], [-1,-2,-3,-4,-5,-6] ]
         
-#we have the data in this format t_in, t_out, p_in,p_out per datapoint. now we need the value for all datapoints of a day
-#number_of_values_per_row =len(day_buffer_list[0]) #the number of different values per row is the same
-#day_features = []
-#sunup_features = []
-#sundown_features = []
+    #we have the data in this format t_in, t_out, p_in,p_out per datapoint. now we need the value for all datapoints of a day
+    number_of_values_per_row =len(day_buffer_list[0]) #the number of different values per row is the same
+    day_features = []
+    sunup_features = []
+    sundown_features = []
         
-#for i in range(number_of_values_per_row):
-#    day_features.append([]) #add a list for each column
-#    sunup_features.append([]) #add a list for each column
-#    sundown_features.append([]) #add a list for each column
+    for i in range(number_of_values_per_row):
+            day_features.append([]) #add a list for each column
+            sunup_features.append([]) #add a list for each column
+            sundown_features.append([]) #add a list for each column
             
-#for row in day_buffer_list:
-#    for i in range(len(row)):
-#        day_features[i].append(row[i])
+    for row in day_buffer_list:
+        for i in range(len(row)):
+            day_features[i].append(row[i])
         
-#for row in day_buffer_sunup_list:
-#      for i in range(len(row)):
-#          sunup_features[i].append(row[i])
+    for row in day_buffer_sunup_list:
+        for i in range(len(row)):
+            sunup_features[i].append(row[i])
 
-#for row in day_buffer_sundown_list:
-#    for i in range(len(row)):
-#        sundown_features[i].append(row[i])
+    for row in day_buffer_sundown_list:
+        for i in range(len(row)):
+            sundown_features[i].append(row[i])
 
-#offset = int(len(day_features)/50)
+    offset = int(len(day_features)/50)
         
 
-#avgl = average_for_lists(day_features)        
-#avgll = lower_average_list(day_features)
-#avglu = upper_average_list(day_features)
-#medl = median_for_lists(day_features)
-#med_lowerl = lower_median_for_lists(day_features,offset)
-#med_upperl = upper_median_for_lists(day_features,offset)
+    avgl = average_for_lists(day_features)        
+    avgll = lower_average_list(day_features)
+    avglu = upper_average_list(day_features)
+    medl = median_for_lists(day_features)
+    med_lowerl = lower_median_for_lists(day_features,offset)
+    med_upperl = upper_median_for_lists(day_features,offset)
 
 #avg = average(day_features[0])        
 #med = statistics.median(day_features[0])
