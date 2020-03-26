@@ -19,12 +19,70 @@ timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
 
 class ValueContainer:
     def __init__(self):
+        #medians
         self.median_for_a_day = {}
         self.median_for_a_day_sunup= {}
         self.median_for_a_day_sundown= {}
+        
+        #averages
         self.average_for_a_day = {}
         self.average_for_a_day_sunup= {}
         self.average_for_a_day_sundown= {}
+        
+        #median spread and relations
+        self.median_sunup_minus_sundown={}
+        self.median_minus_sundown={}
+        self.median_minus_sunup={}
+
+        self.median_sunup_to_sundown={}
+        self.median_to_sundown={}
+        self.median_to_sunup={}
+
+        
+        #average spread and relations
+        self.average_sunup_minus_sundown={}
+        self.average_minus_sundown={}
+        self.average_minus_sunup={}
+
+        self.average_sunup_to_sundown={}
+        self.average_to_sundown={}
+        self.average_to_sunup={}        
+        
+        def calculateFeaturesFromMediaAndAverage(self):
+            for key in self.median_for_a_day.key():
+                self.median_sunup_minus_sundown[key] = self.list_minus_list(self.median_for_a_day_sunup[key],self.median_for_a_day_sundown[key])
+                self.median_minus_sunup[key] = self.list_minus_list(self.median_for_a_day[key],self.median_for_a_day_sunup[key])
+                self.median_minus_sundown[key] = self.list_minus_list(self.median_for_a_day[key],self.median_for_a_day_sundown[key])
+                
+                self.median_sunup_to_sundown[key] = self.list_divided_by_list(self.median_for_a_day_sunup[key],self.median_for_a_day_sundown[key])
+                self.median_to_sunup[key] = self.list_divided_by_list(self.median_for_a_day[key],self.median_for_a_day_sunup[key])
+                self.median_to_sundown[key] = self.list_divided_by_list(self.median_for_a_day[key],self.median_for_a_day_sundown[key])
+                
+                self.average_sunup_minus_sundown[key] = self.list_minus_list(self.average_for_a_day_sunup[key],self.average_for_a_day_sundown[key])
+                self.average_minus_sunup[key] = self.list_minus_list(self.average_for_a_day[key],self.average_for_a_day_sunup[key])
+                self.average_minus_sundown[key] = self.list_minus_list(self.average_for_a_day[key],self.average_for_a_day_sundown[key])
+                
+                self.average_sunup_to_sundown[key] = self.list_divided_by_list(self.average_for_a_day_sunup[key],self.average_for_a_day_sundown[key])
+                self.average_to_sunup[key] = self.list_divided_by_list(self.average_for_a_day[key],self.average_for_a_day_sunup[key])
+                self.average_to_sundown[key] = self.list_divided_by_list(self.average_for_a_day[key],self.average_for_a_day_sundown[key])                
+                
+                
+                
+            
+        def list_minus_list(list1, list2):
+            newlist = []
+            for i in range(len(list1)):
+                newlist.append(list1[i]-list[2])
+            return newlist                
+        
+        def list_divided_by_list(list1,list2):
+            newlist = []
+            for i in range(len(list1)):
+                newlist.append(list1[i]/list[2])
+            return newlist                
+            
+            
+            
         
 dayValues = ValueContainer()        
         
@@ -42,8 +100,8 @@ class FeatureData:
         self.day_median=[]
         self.sunup_median=[]
         self.sundown_median=[]
-        self.sunup_minus_sundown=[]
-        self.sunup_to_sundown=[]
+        self.median_sunup_minus_sundown=[]
+        self.median_sunup_to_sundown=[]
         self.day_median_to_sunup=[]
         self.day_median_to_down=[]
         self.day_median_minus_down=[]
@@ -67,8 +125,6 @@ class FeatureData:
         day_buffer_list = []
         day_buffer_sunrise_list = []
         day_buffer_sunset_list = []
-        
-
 
         for i in range(len(datapoints)):
             if (currentdate != datapoints[i].date):
@@ -111,11 +167,6 @@ class FeatureData:
             for i in range(len(row)):
                 sundown_features[i].append(row[i])
                 
-                
-                
-        #print (day_features)
-        
-        
         dayValues.median_for_a_day[date] = featurecalculation.median_for_lists(day_features)
         dayValues.median_for_a_day_sunup[date] = featurecalculation.median_for_lists(sunup_features)
         dayValues.median_for_a_day_sundown[date] = featurecalculation.median_for_lists(sundown_features)
