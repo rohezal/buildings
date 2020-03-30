@@ -14,8 +14,10 @@ sunsets = {} #dictonary to lookup when the sun sets
 
 datalist = [] #list of csv with calculated future
 
-INITVALUE = -666999
+INITVALUE = -666999 #if you see this value somewhere it is most likely an uninitalized variable
 timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
+heating_period_start_month=8 #start the heating AFTER august
+heating_period_end_month=5 #end the heating BEFORE may
 
 class ValueContainer:
     def __init__(self):
@@ -38,7 +40,6 @@ class ValueContainer:
         self.median_to_sundown={}
         self.median_to_sunup={}
 
-        
         #average spread and relations
         self.average_sunup_minus_sundown={}
         self.average_minus_sundown={}
@@ -46,7 +47,45 @@ class ValueContainer:
 
         self.average_sunup_to_sundown={}
         self.average_to_sundown={}
-        self.average_to_sunup={}        
+        self.average_to_sunup={}  
+        
+        #max and min values of the lowest the outer 5% median method
+        self.median_max_value_day = {}
+        self.median_min_value_day = {}
+        self.median_max_value_sunup = {}
+        self.median_min_value_sunup = {}
+        self.median_max_value_sundown = {}
+        self.median_min_value_sundown = {}
+        
+        
+        #max and min values of the lowest the outer 5% average method
+        self.avg_max_value_day = {}
+        self.avg_min_value_day = {}
+        self.avg_max_value_sunup = {}
+        self.avg_min_value_sunup = {}
+        self.avg_max_value_sundown = {}
+        self.avg_min_value_sundown = {}
+
+        #spread of min and max median
+        self.median_max_minus_min_day = {}
+        self.median_max_minus_min_sunup = {}
+        self.median_max_minus_min_sundown = {}
+        
+        self.median_max_to_min_day = {}
+        self.median_max_to_min_sunup = {}
+        self.median_max_to_min_sundown = {}
+
+
+        #spread of max and min average
+        self.avg_max_minus_min_day = {}
+        self.avg_max_minus_min_sunup = {}
+        self.avg_max_minus_min_sundown = {}
+
+        self.avg_max_to_min_day = {}
+        self.avg_max_to_min_sunup = {}
+        self.avg_max_to_min_sundown = {}
+        
+        
         
         def calculateFeaturesFromMediaAndAverage(self):
             for key in self.median_for_a_day.key():
@@ -64,11 +103,27 @@ class ValueContainer:
                 
                 self.average_sunup_to_sundown[key] = self.list_divided_by_list(self.average_for_a_day_sunup[key],self.average_for_a_day_sundown[key])
                 self.average_to_sunup[key] = self.list_divided_by_list(self.average_for_a_day[key],self.average_for_a_day_sunup[key])
-                self.average_to_sundown[key] = self.list_divided_by_list(self.average_for_a_day[key],self.average_for_a_day_sundown[key])                
+                self.average_to_sundown[key] = self.list_divided_by_list(self.average_for_a_day[key],self.average_for_a_day_sundown[key])
+    
+                #extreme values                
+                self.median_max_minus_min_day = self.list_minus_list(self.median_max_value_day[key],self.median_min_value_day[key])
+                self.median_max_minus_min_sunup = self.list_minus_list(self.median_max_value_sunup[key],self.median_min_value_sunup[key])
+                self.median_max_minus_min_sundown = self.list_minus_list(self.median_max_value_sundown[key],self.median_min_value_sundown[key])
+
+                self.avg_max_minus_min_day = self.list_minus_list(self.avg_max_value_day[key],self.avg_max_value_day[key])
+                self.avg_max_minus_min_sunup = self.list_minus_list(self.avg_max_value_sunup[key],self.avg_max_value_sunup[key])
+                self.avg_max_minus_min_sundown = self.list_minus_list(self.avg_max_value_sundown[key],self.avg_max_value_sundown[key])
                 
+                self.median_max_to_min_day = self.list_divided_by_list(self.median_max_value_day[key],self.median_min_value_day[key])
+                self.median_max_to_min_sunup = self.list_divided_by_list(self.median_max_value_sunup[key],self.median_min_value_sunup[key])
+                self.median_max_to_min_sundown = self.list_divided_by_list(self.median_max_value_sundown[key],self.median_min_value_sundown[key])
+
+                self.avg_max_to_min_day = self.list_divided_by_list(self.avg_max_value_day[key],self.avg_max_value_day[key])
+                self.avg_max_to_min_sunup = self.list_divided_by_list(self.avg_max_value_sunup[key],self.avg_max_value_sunup[key])
+                self.avg_max_to_min_sundown = self.list_divided_by_list(self.avg_max_value_sundown[key],self.avg_max_value_sundown[key])
+        
+
                 
-                
-            
         def list_minus_list(list1, list2):
             newlist = []
             for i in range(len(list1)):
@@ -93,8 +148,10 @@ class FeatureData:
         self.date = datestring.split()[0] #split the date part. 1.1.2020 19:30 -> 1.1.2020
         self.time = datestring.split()[1] #split the time part. 1.1.2020 19:30 -> 19:30
         self.rowdata = data[1:] #take each row after the first one, since the first one is date and time
-        self.sunIsShining=False
-        self.heating_period=False
+        self.sunIsShining=False #will be calculated by calculateIfSunIsShining in loadCSVDataAndFillCaches
+        self.month=int(self.date.split(".")[1]) #13.5.2020 -> 5
+        self.heating_period = self.month > heating_period_start_month or self.month < heating_period_end_month #if month bigger than september or less than may?
+
         self.outside_temperature=INITVALUE
         
         self.day_median=[]
@@ -113,9 +170,6 @@ class FeatureData:
         self.avg_minus_sunup= []
         self.avg_minus_sundown= []
 
-        self.month=""
-        self.my_own_feature=INITVALUE
-        
     def calculateIfSunIsShining(self):
         self.sunIsShining=cachedIsTheSunShining(self.date, self.time)
         #self.sunIsShining=isTheSunShining(self.date, self.time)
@@ -174,6 +228,22 @@ class FeatureData:
         dayValues.average_for_a_day[date] = featurecalculation.average_for_lists(day_features)
         dayValues.average_for_a_day_sunup[date] = featurecalculation.average_for_lists(sunup_features)
         dayValues.average_for_a_day_sundown[date] = featurecalculation.average_for_lists(sundown_features)
+        
+        dayValues.median_max_value_day[date] = featurecalculation.upper_median_for_lists(day_features)
+        dayValues.median_min_value_day[date] = featurecalculation.lower_median_for_lists(day_features)
+
+        dayValues.avg_max_value_day[date] = featurecalculation.upper_average_list(day_features)
+        dayValues.avg_min_value_day[date] = featurecalculation.lower_average_list(day_features)
+        
+        dayValues.median_max_value_sunup[date] = featurecalculation.upper_median_for_lists(sunup_features)
+        dayValues.median_min_value_sunup[date] = featurecalculation.lower_median_for_lists(sunup_features)
+        dayValues.median_max_value_sundown[date] = featurecalculation.upper_median_for_lists(sundown_features)
+        dayValues.median_min_value_sundown[date] = featurecalculation.lower_median_for_lists(sundown_features)
+        
+        dayValues.avg_max_value_sunup[date] = featurecalculation.upper_average_list(sunup_features)
+        dayValues.avg_min_value_sunup[date] = featurecalculation.lower_average_list(sunup_features)
+        dayValues.avg_max_value_sundown[date] = featurecalculation.upper_average_list(sundown_features)
+        dayValues.avg_min_value_sundown[date] = featurecalculation.lower_average_list(sundown_features)
     
         #print(day_buffer_list);
         

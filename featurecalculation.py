@@ -39,7 +39,6 @@ def upper_median_for_lists(medianlist, offset = None):
     for element in medianlist:
         temp = element.copy()
         temp.sort()
-        print (temp)
         returnlist.append(temp[-offset])
     return returnlist
 
