@@ -267,13 +267,16 @@ class FeatureData:
     def dateToIsWeekend(date):
         date=date
 
-	def timeTohourOfDay(time):		
+	def timeToHourOfDay(time):		
 		hour = time
 		
 	def getLastSunDayOfMonth(date):
 		return 0
 		
 	def dateToDayOfMonth(date):
+		return date
+	
+	def dateToWeekOfYear(date):
 		return date
 		
 	def isSummerTime(date):		
