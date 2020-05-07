@@ -248,9 +248,53 @@ class FeatureData:
         #print(day_buffer_list);
         
     def dateToMonth(date):
-        date = date
-    def dateToHeating(date):
+        month = date
+		return month
+	
+    def dateToDayOfWeek(date):
+        day = date
+		return day	
+    
+    def dateToIsHeatingPeriod(date):
         date=date
+	
+	def dateToYear(date):
+        date=date
+		
+	def dateToQuarter(date):
+        date=date
+		
+    def dateToIsWeekend(date):
+        date=date
+
+	def timeTohourOfDay(time):		
+		hour = time
+		
+	def getLastSunDayOfMonth(date):
+		return 0
+		
+	def dateToDayOfMonth(date):
+		return date
+		
+	def isSummerTime(date):		
+		month = dateToMonth(date)
+		dayOfMonth = dateToDayOfMonth(date)
+		dayOfWeek = dateToDayOfWeek(date)
+		
+		if(month > 2 AND month < 11):
+			if(month > 3 AND month < 10): #April to September
+				return True
+			else if (month == 2):
+				return dayOfMonth >= getLastSunDayOfMonth(date)
+				
+			else if (month == 10):
+				return dayOfMonth < getLastSunDayOfMonth(date)
+		
+		return False
+		
+		
+		
+		
         
     def copyFeaturesFromDictonaryToFeatureData(datapoints):
         for point in datapoints:
