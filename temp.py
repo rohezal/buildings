@@ -249,51 +249,51 @@ class FeatureData:
         
     def dateToMonth(date):
         month = date
-		return month
+        return month
 	
     def dateToDayOfWeek(date):
         day = date
-		return day	
+        return day	
     
     def dateToIsHeatingPeriod(date):
         date=date
 	
-	def dateToYear(date):
+    def dateToYear(date):
         date=date
 		
-	def dateToQuarter(date):
+    def dateToQuarter(date):
         date=date
 		
     def dateToIsWeekend(date):
         date=date
 
-	def timeToHourOfDay(time):		
-		hour = time
+    def timeToHourOfDay(time):		
+        hour = time
 		
-	def getLastSunDayOfMonth(date):
-		return 0
+    def getLastSundayOfMonth(date):
+        return 0
 		
-	def dateToDayOfMonth(date):
-		return date
+    def dateToDayOfMonth(date):
+        return date
 	
-	def dateToWeekOfYear(date):
-		return date
+    def dateToWeekOfYear(date):
+        return date
 		
-	def isSummerTime(date):		
-		month = dateToMonth(date)
-		dayOfMonth = dateToDayOfMonth(date)
-		dayOfWeek = dateToDayOfWeek(date)
+    def isSummerTime(date):		
+        month = FeatureData.dateToMonth(date)
+        dayOfMonth = FeatureData.dateToDayOfMonth(date)
+        dayOfWeek = FeatureData.dateToDayOfWeek(date)
 		
-		if(month > 2 AND month < 11):
-			if(month > 3 AND month < 10): #April to September
-				return True
-			else if (month == 2):
-				return dayOfMonth >= getLastSunDayOfMonth(date)
+        if(month > 2 and month < 11):
+            if(month > 3 and month < 10): #April to September
+                return True
+            elif (month == 2):
+                return dayOfMonth >= FeatureData.getLastSundayOfMonth(date)
 				
-			else if (month == 10):
-				return dayOfMonth < getLastSunDayOfMonth(date)
+            elif (month == 10):
+                return dayOfMonth < FeatureData.getLastSundayOfMonth(date)
 		
-		return False
+        return False
 		
 		
 		
