@@ -5,19 +5,20 @@ import statistics
 import ephem
 import datetime
 from ephem import cities
-import featurecalculation
+#import featurecalculation
+#import featuredata
 
+import BuildingFeatures
+from BuildingFeatures import FeatureData
+from BuildingFeatures import SunAndCalendarData
 
-
-sunrises = {} #dictonary to lookup when the sun rises
-sunsets = {} #dictonary to lookup when the sun sets
+#from BuildingFeatures import featuredata 
+#from BuildingFeatures import SunAndCalendarData 
+#from BuildingFeatures import FeatureData
 
 datalist = [] #list of csv with calculated future
-
-INITVALUE = -666999 #if you see this value somewhere it is most likely an uninitalized variable
 timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
-heating_period_start_month=8 #start the heating AFTER august
-heating_period_end_month=5 #end the heating BEFORE may
+
 
 class ValueContainer:
 	def __init__(self):
@@ -139,193 +140,8 @@ class ValueContainer:
 			
 			
 		
-dayValues = ValueContainer()		
-		
-class FeatureData:
-	def __init__(self, data):
-		#datestring = data[0].replace("\"", "") #take the first row and assume it is date and time. e.g. 1.1.2020 19:30 
-		datestring = data[0] #take the first row and assume it is date and time. e.g. 1.1.2020 19:30 
-		self.date = datestring.split()[0] #split the date part. 1.1.2020 19:30 -> 1.1.2020
-		self.time = datestring.split()[1] #split the time part. 1.1.2020 19:30 -> 19:30
-		self.rowdata = data[1:] #take each row after the first one, since the first one is date and time
-		self.sunIsShining=False #will be calculated by calculateIfSunIsShining in loadCSVDataAndFillCaches
-		self.month=int(self.date.split(".")[1]) #13.5.2020 -> 5
-		self.heating_period = self.month > heating_period_start_month or self.month < heating_period_end_month #if month bigger than september or less than may?
-
-		self.outside_temperature=INITVALUE
-		
-		self.day_median=[]
-		self.sunup_median=[]
-		self.sundown_median=[]
-		self.median_sunup_minus_sundown=[]
-		self.median_sunup_to_sundown=[]
-		self.day_median_to_sunup=[]
-		self.day_median_to_down=[]
-		self.day_median_minus_down=[]
-		self.day_median_minus_sunup=[]
-		self.day_avg = []
-		self.sunup_avg= []
-		self.sundown_avg= []
-		self.avg_sunup_minus_sundown= []
-		self.avg_minus_sunup= []
-		self.avg_minus_sundown= []
-
-	def calculateIfSunIsShining(self):
-		self.sunIsShining=cachedIsTheSunShining(self.date, self.time)
-		#self.sunIsShining=isTheSunShining(self.date, self.time)
-		
-	def calculateFeatures(datapoints):
-		currentdate = datapoints[0].date
-		day_buffer_list = []
-		day_buffer_sunrise_list = []
-		day_buffer_sunset_list = []
-
-		for i in range(len(datapoints)):
-			if (currentdate != datapoints[i].date):
-				FeatureData.helperCalculateFeatures(currentdate, day_buffer_list,day_buffer_sunrise_list,day_buffer_sunset_list)
-				day_buffer_list.clear()
-				day_buffer_sunrise_list.clear()
-				day_buffer_sunset_list.clear()
-				currentdate = datapoints[i].date
-				#print (currentdate)
-
-			day_buffer_list.append(datapoints[i].rowdata)
-			if(datapoints[i].sunIsShining == True):
-				day_buffer_sunrise_list.append(datapoints[i].rowdata)
-			else:
-				day_buffer_sunset_list.append(datapoints[i].rowdata)
-			  
-		
-	def helperCalculateFeatures(date, day_buffer_list,day_buffer_sunup_list,day_buffer_sundown_list):
-		
-		#we have the data in this format t_in, t_out, p_in,p_out per datapoint. now we need the value for all datapoints of a day
-		number_of_values_per_row =len(day_buffer_list[0]) #the number of different values per row is the same
-		day_features = []
-		sunup_features = []
-		sundown_features = []
-		
-		for i in range(number_of_values_per_row):
-			day_features.append([]) #add a list for each column
-			sunup_features.append([]) #add a list for each column
-			sundown_features.append([]) #add a list for each column
-			
-		for row in day_buffer_list:
-			for i in range(len(row)):
-				day_features[i].append(row[i])
-
-		for row in day_buffer_sunup_list:
-			for i in range(len(row)):
-				sunup_features[i].append(row[i])
-
-		for row in day_buffer_sundown_list:
-			for i in range(len(row)):
-				sundown_features[i].append(row[i])
-				
-		dayValues.median_for_a_day[date] = featurecalculation.median_for_lists(day_features)
-		dayValues.median_for_a_day_sunup[date] = featurecalculation.median_for_lists(sunup_features)
-		dayValues.median_for_a_day_sundown[date] = featurecalculation.median_for_lists(sundown_features)
-		
-		dayValues.average_for_a_day[date] = featurecalculation.average_for_lists(day_features)
-		dayValues.average_for_a_day_sunup[date] = featurecalculation.average_for_lists(sunup_features)
-		dayValues.average_for_a_day_sundown[date] = featurecalculation.average_for_lists(sundown_features)
-		
-		dayValues.median_max_value_day[date] = featurecalculation.upper_median_for_lists(day_features)
-		dayValues.median_min_value_day[date] = featurecalculation.lower_median_for_lists(day_features)
-
-		dayValues.avg_max_value_day[date] = featurecalculation.upper_average_list(day_features)
-		dayValues.avg_min_value_day[date] = featurecalculation.lower_average_list(day_features)
-		
-		dayValues.median_max_value_sunup[date] = featurecalculation.upper_median_for_lists(sunup_features)
-		dayValues.median_min_value_sunup[date] = featurecalculation.lower_median_for_lists(sunup_features)
-		dayValues.median_max_value_sundown[date] = featurecalculation.upper_median_for_lists(sundown_features)
-		dayValues.median_min_value_sundown[date] = featurecalculation.lower_median_for_lists(sundown_features)
-		
-		dayValues.avg_max_value_sunup[date] = featurecalculation.upper_average_list(sunup_features)
-		dayValues.avg_min_value_sunup[date] = featurecalculation.lower_average_list(sunup_features)
-		dayValues.avg_max_value_sundown[date] = featurecalculation.upper_average_list(sundown_features)
-		dayValues.avg_min_value_sundown[date] = featurecalculation.lower_average_list(sundown_features)
-	
-		#print(day_buffer_list);
-		
-	def dateToMonth(date):
-		month = "undefined: " + date
-		assert date.count(".") == 2
-		month = date.split()[1] #split 30.1.2020 to 20 1 2020, keep the 1
-		return month
-	
-	def dateToDayOfWeek(date):
-		day = date
-		#ans = datetime.date(year, month, day)
-
-		return day	
-	
-	def dateToIsHeatingPeriod(date):
-		month = "undefined: " + date
-		assert date.count(".") == 2
-		month = date.split()[1] #split 30.1.2020 to 20 1 2020, keep the 1
-		month_int = int(month)
-		
-		return month_int > 4 and month_int < 10 #heating is required between october and the first of may
-		
-	
-	def dateToYear(date):
-		year = "undefined"
-		assert date.count(".") == 2
-		year = date.split()[2] #split 30.1.2020 to 30 1 2020, keep the 2020
-		return year
-		
-	def dateToQuarter(date):
-		month = "undefined: " + date
-		assert date.count(".") == 2
-		month = date.split()[1] #split 30.1.2020 to 20 1 2020, keep the 1
-		quarter = int(month)/4+1
-		return quarter
-		
-	def dateToIsWeekend(date):
-		date=date
-
-	def timeToHourOfDay(time):		
-		hour = time
-		
-	def getLastSundayOfMonth(date):
-		return 0
-		
-	def dateToDayOfMonth(date):
-		return date
-	
-	def dateToWeekOfYear(date):
-		return date
-		
-	def isSummerTime(date):		
-		month = FeatureData.dateToMonth(date)
-		dayOfMonth = FeatureData.dateToDayOfMonth(date)
-		dayOfWeek = FeatureData.dateToDayOfWeek(date)
-		
-		if(month > 2 and month < 11):
-			if(month > 3 and month < 10): #April to September
-				return True
-			elif (month == 2):
-				return dayOfMonth >= FeatureData.getLastSundayOfMonth(date)
-				
-			elif (month == 10):
-				return dayOfMonth < FeatureData.getLastSundayOfMonth(date)
-		
-		return False
-		
-		
-		
-		
-		
-	def copyFeaturesFromDictonaryToFeatureData(datapoints):
-		for point in datapoints:
-			point.day_median = dayValues.median_for_a_day[point.date]
-		
-		
-	def exportToCSV(datapoints):
-		print("implement me")
 #def loadCSVAndComputeSunrise(filename):
-	
-		
+
 #def calculateFeatures(datapoints):
 	
 def median_for_lists(input):
@@ -378,13 +194,7 @@ def average(input):
 	sum = sum / len(input)		
 	return sum
 
-def cachedIsTheSunShining(mydate, mytime):
-	giventime = datetime.datetime.strptime(mytime, '%H:%M').time()
 
-	if giventime > sunrises[mydate] and giventime < sunsets[mydate]:
-		return True
-	else:
-		return False
 	
 def loadCSVDataAndFillCaches(csv_reader):
 	lastdate = "" 
@@ -424,8 +234,8 @@ def isTheSunShining(mydate, mytime):
 	
 	giventime = datetime.datetime.strptime(mytime, '%H:%M').time()
 	
-	sunrises[mydate] = sunrise
-	sunsets[mydate] = sunset
+	SunAndCalendarData.sunrises[mydate] = sunrise
+	SunAndCalendarData.sunsets[mydate] = sunset
 	
    
 	if giventime > sunrise and giventime < sunset:
@@ -436,7 +246,7 @@ def isTheSunShining(mydate, mytime):
 	
 
 
-featurecalculation.unit_test()
+#featurecalculation.unit_test()
 
 	
 with open('converted_BRICS.csv') as csv_file_brics:	
@@ -498,18 +308,18 @@ with open('yearly.csv') as csv_file:
 	
 	print("======================================================")
 
-	print(cachedIsTheSunShining("2020/3/12", "4:30"))
-	print(cachedIsTheSunShining("2020/3/12", "7:30"))
-	print(cachedIsTheSunShining("2020/3/12", "20:30"))
+	print(FeatureData.cachedIsTheSunShining("2020/3/12", "4:30"))
+	print(FeatureData.cachedIsTheSunShining("2020/3/12", "7:30"))
+	print(FeatureData.cachedIsTheSunShining("2020/3/12", "20:30"))
 
-	print(str(sunrises["2020/3/12"]) + " " + str(sunsets["2020/3/12"]))
+	print(str(SunAndCalendarData.sunrises["2020/3/12"]) + " " + str(SunAndCalendarData.sunsets["2020/3/12"]))
 	
 	print("======================================================")
-	sunrises['big'] = datetime.datetime.strptime("8:00", '%H:%M').time()
-	sunrises['small'] = datetime.datetime.strptime("7:00", '%H:%M').time()
+	SunAndCalendarData.sunrises['big'] = datetime.datetime.strptime("8:00", '%H:%M').time()
+	SunAndCalendarData.sunrises['small'] = datetime.datetime.strptime("7:00", '%H:%M').time()
 	print("Test")
-	print(sunrises["2012/1/1"] < sunrises['big'] )
-	print(sunrises["2012/1/1"] < sunrises['small'] )
+	print(SunAndCalendarData.sunrises["2012/1/1"] < SunAndCalendarData.sunrises['big'] )
+	print(SunAndCalendarData.sunrises["2012/1/1"] < SunAndCalendarData.sunrises['small'] )
 	
 	
 	
