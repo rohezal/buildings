@@ -21,8 +21,8 @@ INITVALUE = -666999 #if you see this value somewhere it is most likely an uninit
 class SunAndCalendarData:
 	sunrises = {} #dictonary to lookup when the sun rises
 	sunsets = {} #dictonary to lookup when the sun sets
-	heating_period_start_month=8 #start the heating AFTER august
-	heating_period_end_month=5 #end the heating BEFORE may
+	heating_period_start_month=9 #start the heating AFTER september
+	heating_period_end_month=4 #end the heating BEFORE may
 	
 	def clearCaches():
 		SunAndCalendarData.sunrises = {} #dictonary to lookup when the sun rises
@@ -146,14 +146,25 @@ class FeatureData:
 		month = "undefined: " + date
 		assert date.count(".") == 2
 		month = date.split(".")[1] #split 30.1.2020 to 20 1 2020, keep the 1
-		
 		return month
+	
+	def dateToDay(date):
+		day = "undefined: " + date
+		assert date.count(".") == 2
+		day = date.split(".")[0] #split 30.1.2020 to 20 1 2020, keep the 1
+		
+		return day
+	
 	
 	def dateToDayOfWeek(date):
 		day = date
 		#ans = datetime.date(year, month, day)
-
-		return day	
+		year = int(FeatureData.dateToYear(date))
+		month = int(FeatureData.dateToMonth(date))
+		day = int(FeatureData.dateToDay(date))
+		
+		return datetime.datetime(year, month, day).weekday()
+		
 	
 	def dateToIsHeatingPeriod(date):
 		month = "undefined: " + date
@@ -161,7 +172,7 @@ class FeatureData:
 		month = date.split(".")[1] #split 30.1.2020 to 20 1 2020, keep the 1
 		month_int = int(month)
 		
-		return month_int > SunAndCalendarData.heating_period_start_month and month_int < SunAndCalendarData.heating_period_end_month #heating is required between october and the first of may
+		return not (month_int > SunAndCalendarData.heating_period_end_month and month_int < SunAndCalendarData.heating_period_start_month) #heating is required between october and the first of may
 		
 	
 	def dateToYear(date):
