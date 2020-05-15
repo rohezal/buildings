@@ -208,7 +208,8 @@ class FeatureData:
 	def getLastSundayOfMonth(date):
 		year = int(FeatureData.dateToYear(date))
 		month = int(FeatureData.dateToMonth(date))
-		day = int(FeatureData.dateToDay(date))
+		#day = int(FeatureData.dateToDay(date))
+		day = 20
 
 		today = datetime.date(year,month,day)
 		offset = (today.weekday() - 6)%7 #-6 forsunday

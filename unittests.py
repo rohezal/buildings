@@ -233,6 +233,16 @@ def unittest_getLastSundayOfMonth():
 	result = FeatureData.getLastSundayOfMonth(date)
 	print (date +": " + str(result))		
 	
+	date  = "29.04.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))		
+	
+	date  = "27.02.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))		
+	
+	
+	
 def unittest_timeToHourOfDay():
 	print("unittest_timeToHourOfDay")
 
