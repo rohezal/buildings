@@ -139,7 +139,86 @@ def unittest_dayOfWeek():
 	date  = "10.05.2020"
 	result = FeatureData.dateToDayOfWeek(date)
 	print (date +": " + str(result))
+	
+def unittest_dayOfWeek():
+	print("unittest_isWeekend")
+
+	date  = "04.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+	date  = "05.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+	date  = "06.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+	date  = "07.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+	date  = "08.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+	date  = "09.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+	date  = "10.05.2020"
+	result = FeatureData.dateToIsWeekend(date)
+	print (date +": " + str(result))
+
+def unittest_dateToDay():
+	print("unittest_dateToDay")
+
+	date  = "04.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))
+
+	date  = "05.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))
+
+	date  = "06.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))
+
+	date  = "07.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))
+
+	date  = "08.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))
+
+	date  = "09.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))
+
+	date  = "10.05.2020"
+	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))		
+	
+def unittest_timeToHourOfDay():
+	print("unittest_timeToHourOfDay")
+
+	date  = "00:00"
+	result = FeatureData.timeToHourOfDay(date)
+	print (date +": " + str(result))
+
+	date  = "12:00"
+	result = FeatureData.timeToHourOfDay(date)
+	print (date +": " + str(result))
+
+	date  = "23:59"
+	result = FeatureData.timeToHourOfDay(date)
+	print (date +": " + str(result))
 
 unittest_dateToIsHeatingPeriod()
 unittest_dateToMonth()
 unittest_dayOfWeek()
+unittest_dateToDay()
+unittest_timeToHourOfDay()

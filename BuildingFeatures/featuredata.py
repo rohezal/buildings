@@ -23,6 +23,8 @@ class SunAndCalendarData:
 	sunsets = {} #dictonary to lookup when the sun sets
 	heating_period_start_month=9 #start the heating AFTER september
 	heating_period_end_month=4 #end the heating BEFORE may
+	CONSTANT_SATURDAY = 6
+	CONSTANT_SUNDAY = 7
 	
 	def clearCaches():
 		SunAndCalendarData.sunrises = {} #dictonary to lookup when the sun rises
@@ -149,7 +151,7 @@ class FeatureData:
 		return month
 	
 	def dateToDay(date):
-		day = "undefined: " + date
+		day = date
 		assert date.count(".") == 2
 		day = date.split(".")[0] #split 30.1.2020 to 20 1 2020, keep the 1
 		
@@ -163,7 +165,7 @@ class FeatureData:
 		month = int(FeatureData.dateToMonth(date))
 		day = int(FeatureData.dateToDay(date))
 		
-		return datetime.datetime(year, month, day).weekday()
+		return datetime.datetime(year, month, day).isoweekday()
 		
 	
 	def dateToIsHeatingPeriod(date):
@@ -189,10 +191,15 @@ class FeatureData:
 		return quarter
 		
 	def dateToIsWeekend(date):
-		date=date
+		dayOfWeek = FeatureData.dateToDayOfWeek(date)		
+		return dayOfWeek == SunAndCalendarData.CONSTANT_SATURDAY or dayOfWeek == SunAndCalendarData.CONSTANT_SUNDAY
 
 	def timeToHourOfDay(time):		
 		hour = time
+		assert hour.count(":") == 1
+		hour = hour.split(":")[0] #split 30.1.2020 to 20 1 2020, keep the 1
+		return hour
+		
 		
 	def getLastSundayOfMonth(date):
 		return 0
