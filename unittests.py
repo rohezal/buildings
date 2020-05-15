@@ -200,6 +200,37 @@ def unittest_dateToDay():
 
 	date  = "10.05.2020"
 	result = FeatureData.dateToDay(date)
+	print (date +": " + str(result))	
+
+def unittest_getLastSundayOfMonth():
+	print("unittest_getLastSundayOfMonth")
+
+	date  = "04.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))
+
+	date  = "05.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))
+
+	date  = "16.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))
+
+	date  = "17.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))
+
+	date  = "24.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))
+
+	date  = "30.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
+	print (date +": " + str(result))
+
+	date  = "31.05.2020"
+	result = FeatureData.getLastSundayOfMonth(date)
 	print (date +": " + str(result))		
 	
 def unittest_timeToHourOfDay():
@@ -222,3 +253,4 @@ unittest_dateToMonth()
 unittest_dayOfWeek()
 unittest_dateToDay()
 unittest_timeToHourOfDay()
+unittest_getLastSundayOfMonth()

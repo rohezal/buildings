@@ -154,7 +154,6 @@ class FeatureData:
 		day = date
 		assert date.count(".") == 2
 		day = date.split(".")[0] #split 30.1.2020 to 20 1 2020, keep the 1
-		
 		return day
 	
 	
@@ -193,6 +192,11 @@ class FeatureData:
 	def dateToIsWeekend(date):
 		dayOfWeek = FeatureData.dateToDayOfWeek(date)		
 		return dayOfWeek == SunAndCalendarData.CONSTANT_SATURDAY or dayOfWeek == SunAndCalendarData.CONSTANT_SUNDAY
+	
+	def dateToIsSunday(date):
+		dayOfWeek = FeatureData.dateToDayOfWeek(date)		
+		return dayOfWeek == SunAndCalendarData.CONSTANT_SUNDAY
+
 
 	def timeToHourOfDay(time):		
 		hour = time
@@ -202,11 +206,39 @@ class FeatureData:
 		
 		
 	def getLastSundayOfMonth(date):
-		return 0
+		year = int(FeatureData.dateToYear(date))
+		month = int(FeatureData.dateToMonth(date))
+		day = int(FeatureData.dateToDay(date))
+
+		today = datetime.date(year,month,day)
+		offset = (today.weekday() - 6)%7 #-6 forsunday
+		last_saturday = today - datetime.timedelta(days=offset)
 		
-	def dateToDayOfMonth(date):
-		return date
-	
+		next_month = month
+		next_day = day
+		mydate = datetime.date(year,month,day)
+		last_sunday_saved = "UNDEFINED"
+		
+		if(FeatureData.dateToIsSunday(date) == True):
+			mydate = mydate + datetime.timedelta(days=1)
+			next_month =  int(FeatureData.dateToMonth(mydate.strftime("%d.%m.%Y")))
+			if(next_month > month):
+				return date
+				
+		
+		while month == next_month:
+			mydate = mydate + datetime.timedelta(days=1)
+			next_month =  int(FeatureData.dateToMonth(mydate.strftime("%d.%m.%Y")))
+			my_date_string = mydate.strftime("%d.%m.%Y")
+			
+			if(month != next_month):
+				break
+			
+			if(FeatureData.dateToIsSunday(my_date_string) == True):
+				last_sunday_saved = my_date_string
+			
+		return last_sunday_saved
+		
 	def dateToWeekOfYear(date):
 		return date
 		
