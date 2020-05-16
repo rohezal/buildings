@@ -241,8 +241,6 @@ def unittest_getLastSundayOfMonth():
 	result = FeatureData.getLastSundayOfMonth(date)
 	print (date +": " + str(result))		
 	
-	
-	
 def unittest_timeToHourOfDay():
 	print("unittest_timeToHourOfDay")
 
@@ -258,9 +256,63 @@ def unittest_timeToHourOfDay():
 	result = FeatureData.timeToHourOfDay(date)
 	print (date +": " + str(result))
 
+def unittest_isDaylightSavingTime():
+	print("unittest_isDaylightSavingTime")
+
+	date  = "01.01.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+
+	date  = "01.03.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+	date  = "28.03.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+	date  = "29.03.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+	date  = "30.03.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+	date  = "24.05.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+	date  = "30.08.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))
+
+	date  = "23.10.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))		
+	
+	date  = "24.10.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))		
+	
+	date  = "25.10.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))		
+	
+	date  = "26.10.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))		
+	
+	date  = "25.12.2020"
+	result = FeatureData.isDaylightSavingTime(date)
+	print (date +": " + str(result))		
+	
+
 unittest_dateToIsHeatingPeriod()
 unittest_dateToMonth()
 unittest_dayOfWeek()
 unittest_dateToDay()
 unittest_timeToHourOfDay()
 unittest_getLastSundayOfMonth()
+unittest_isDaylightSavingTime()

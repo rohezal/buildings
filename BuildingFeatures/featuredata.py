@@ -153,7 +153,7 @@ class FeatureData:
 	def dateToDay(date):
 		day = date
 		assert date.count(".") == 2
-		day = date.split(".")[0] #split 30.1.2020 to 20 1 2020, keep the 1
+		day = date.split(".")[0] #split 30.1.2020 to 20 1 2020, keep the 30
 		return day
 	
 	
@@ -211,12 +211,7 @@ class FeatureData:
 		#day = int(FeatureData.dateToDay(date))
 		day = 20
 
-		today = datetime.date(year,month,day)
-		offset = (today.weekday() - 6)%7 #-6 forsunday
-		last_saturday = today - datetime.timedelta(days=offset)
-		
 		next_month = month
-		next_day = day
 		mydate = datetime.date(year,month,day)
 		last_sunday_saved = "UNDEFINED"
 		
@@ -243,23 +238,21 @@ class FeatureData:
 	def dateToWeekOfYear(date):
 		return date
 		
-	def isSummerTime(date):		
-		month = FeatureData.dateToMonth(date)
-		dayOfMonth = FeatureData.dateToDayOfMonth(date)
-		dayOfWeek = FeatureData.dateToDayOfWeek(date)
+	def isDaylightSavingTime(date): #summnertime check
+		month = int(FeatureData.dateToMonth(date))
 		
-		if(month > 2 and month < 11):
-			if(month > 3 and month < 10): #April to September
-				return True
-			elif (month == 2):
-				return dayOfMonth >= FeatureData.getLastSundayOfMonth(date)
-				
-			elif (month == 10):
-				return dayOfMonth < FeatureData.getLastSundayOfMonth(date)
-		
-		return False
-		
-		
+		if (month == 3 or month == 10):
+			day = int(FeatureData.dateToDay(date))
+			last_sunday = int(FeatureData.dateToDay(FeatureData.getLastSundayOfMonth(date)))
+			
+			if(month == 3):
+				return day < last_sunday #if day not yet last sunday saving time is still applied
+			else: #month == 11
+				return day >= last_sunday #if day is last sunday or later saving time started
+		else:
+			#print(date + ": month < 3:" + str(month < 3) + " | month > 10" + str(month > 10)  )
+			saving_time = month < 3 or month > 10 #january, february, november, december: smaller than march bigger than no october
+			return saving_time
 		
 		
 		
