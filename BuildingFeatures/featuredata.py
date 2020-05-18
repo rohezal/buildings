@@ -41,8 +41,24 @@ class FeatureData:
 		self.time = datestring.split()[1] #split the time part. 1.1.2020 19:30 -> 19:30
 		self.rowdata = data[1:] #take each row after the first one, since the first one is date and time
 		self.sunIsShining=False #will be calculated by calculateIfSunIsShining in loadCSVDataAndFillCaches
-		self.month=int(self.date.split(".")[1]) #13.5.2020 -> 5
+
+		#self.month=int(self.date.split(".")[1]) #13.5.2020 -> 5
+		#self.day = int(self.date.split(".")[0]) #13.5.2020 -> 13
+		#self.hour = int(self.time.split(":")[0]) #19:30 -> 19
+		
+		self.month = FeatureData.dateToMonth(self.date) #13.5.2020 -> 5
+		self.day = FeatureData.dateToDay(self.date) #13.5.2020 -> 13
+		self.hour = FeatureData.timeToHourOfDay(self.time) #19:30 -> 19
+		
+		self.day_of_week = FeatureData.dateToDayOfWeek(self.date)
+		self.week_of_year = FeatureData.dateToWeekOfYear(self.date)
+		self.quarter_of_year = FeatureData.dateToQuarter(self.date)
+		self.season = FeatureData.dateToSeason(self.date)
+		
 		self.heating_period = FeatureData.dateToMonth(self.date) #if month bigger than september or less than may?
+		self.daylight_saving_time = FeatureData.isDaylightSavingTime(self.date)
+		
+		
 
 		self.outside_temperature=INITVALUE
 		
@@ -186,7 +202,7 @@ class FeatureData:
 		month = "undefined: " + date
 		assert date.count(".") == 2
 		month = date.split(".")[1] #split 30.1.2020 to 20 1 2020, keep the 1
-		quarter = int(month)/4+1
+		quarter = int((int(month)-1)/3)+1
 		return quarter
 		
 	def dateToIsWeekend(date):
@@ -196,6 +212,39 @@ class FeatureData:
 	def dateToIsSunday(date):
 		dayOfWeek = FeatureData.dateToDayOfWeek(date)		
 		return dayOfWeek == SunAndCalendarData.CONSTANT_SUNDAY
+	
+	def dateToSeason(date):
+		year = int(FeatureData.dateToYear(date))
+		month = int(FeatureData.dateToMonth(date))
+		day = int(FeatureData.dateToDay(date))
+		
+		# get the current day of the year
+		doy = datetime.date(year, month, day).timetuple().tm_yday
+		
+		# "day of year" ranges for the northern hemisphere
+		spring = range(80, 172)
+		summer = range(172, 264)
+		fall = range(264, 355)
+		# winter = everything else
+		
+		if doy in spring:
+		  season = 1
+		elif doy in summer:
+		  season = 2
+		elif doy in fall:
+		  season = 3
+		else:
+		  season = 0
+
+		return season
+		
+	def dateToWeekOfYear(date):
+		year = int(FeatureData.dateToYear(date))
+		month = int(FeatureData.dateToMonth(date))
+		day = int(FeatureData.dateToDay(date))
+		
+		week_of_year = datetime.date(year, month, day).isocalendar()[1]
+		return week_of_year
 
 
 	def timeToHourOfDay(time):		
@@ -203,7 +252,6 @@ class FeatureData:
 		assert hour.count(":") == 1
 		hour = hour.split(":")[0] #split 30.1.2020 to 20 1 2020, keep the 1
 		return hour
-		
 		
 	def getLastSundayOfMonth(date):
 		year = int(FeatureData.dateToYear(date))
@@ -234,9 +282,6 @@ class FeatureData:
 				last_sunday_saved = my_date_string
 			
 		return last_sunday_saved
-		
-	def dateToWeekOfYear(date):
-		return date
 		
 	def isDaylightSavingTime(date): #summnertime check
 		month = int(FeatureData.dateToMonth(date))

@@ -140,7 +140,7 @@ def unittest_dayOfWeek():
 	result = FeatureData.dateToDayOfWeek(date)
 	print (date +": " + str(result))
 	
-def unittest_dayOfWeek():
+def unittest_dateToIsWeekend():
 	print("unittest_isWeekend")
 
 	date  = "04.05.2020"
@@ -308,11 +308,161 @@ def unittest_isDaylightSavingTime():
 	result = FeatureData.isDaylightSavingTime(date)
 	print (date +": " + str(result))		
 	
+def unittest_dateToQuarter():	
+	print("unittest_dateToQuarter")
 
-unittest_dateToIsHeatingPeriod()
-unittest_dateToMonth()
-unittest_dayOfWeek()
-unittest_dateToDay()
-unittest_timeToHourOfDay()
-unittest_getLastSundayOfMonth()
-unittest_isDaylightSavingTime()
+	date  = "01.01.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "01.03.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "28.03.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "29.03.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "30.03.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+	
+	date  = "01.05.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+	
+	date  = "29.06.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "15.07.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "29.09.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "30.10.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "30.11.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "31.12.2020"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "29.01.2021"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+
+	date  = "30.12.2021"
+	result = FeatureData.dateToQuarter(date)
+	print (date +": " + str(result))
+	
+def unittest_dateToWeekOfYear():
+	print("unittest_dateToWeekOfYear")
+
+	date  = "01.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+	
+	date  = "04.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+
+	date  = "05.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+	
+	
+	date  = "06.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+
+	date  = "12.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+
+	date  = "13.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+
+	date  = "30.01.2020"
+	result = FeatureData.dateToWeekOfYear(date)
+	print (date +": " + str(result))
+	
+def unittest_dateToSeason():
+	print("unittest_dateToSeason")
+
+	date  = "01.01.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+
+	date  = "01.03.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+
+	date  = "19.03.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+
+	date  = "20.03.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+
+	date  = "21.03.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+	
+	date  = "01.05.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+	
+	date  = "20.06.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+
+	date  = "21.07.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))
+	
+	date  = "01.08.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))		
+	
+	date  = "01.09.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))		
+	
+	date  = "01.10.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))		
+
+	date  = "01.11.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))		
+
+	date  = "01.12.2019"
+	result = FeatureData.dateToSeason(date)
+	print (date +": " + str(result))		
+	
+
+#unittest_dateToIsHeatingPeriod()
+#unittest_dateToMonth()
+#unittest_dayOfWeek()
+#unittest_dateToIsWeekend()
+#unittest_dateToDay()
+#unittest_timeToHourOfDay()
+#unittest_getLastSundayOfMonth()
+#unittest_isDaylightSavingTime()
+#unittest_dateToQuarter()
+#unittest_dateToWeekOfYear()
+unittest_dateToSeason()
