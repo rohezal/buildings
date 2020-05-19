@@ -307,7 +307,43 @@ class FeatureData:
 		
 		
 	def exportToCSV(datapoints):
-		print("implement me")
+		x = FeatureData(None)
+		for point in datapoints:
+		
+			for row in point.rowdata:
+				point.date
+				point.time
+				point.rowdata
+				point.sunIsShining
+		
+				point.month
+				point.day
+				point.hour
+				
+				point.day_of_week
+				point.week_of_year
+				point.quarter_of_year
+				point.season
+				
+				point.heating_period
+				point.daylight_saving_time
+				
+				point.day_median
+				point.sunup_median
+				point.sundown_median
+				point.median_sunup_minus_sundown
+				point.median_sunup_to_sundown
+				point.day_median_to_sunup
+				point.day_median_to_down
+				point.day_median_minus_down
+				point.day_median_minus_sunup
+				point.day_avg
+				point.sunup_avg
+				point.sundown_avg
+				point.avg_sunup_minus_sundown
+				point.avg_minus_sunup
+				point.avg_minus_sundown
+			
 		
 	def cachedIsTheSunShining(mydate, mytime):
 		giventime = datetime.datetime.strptime(mytime, '%H:%M').time()
