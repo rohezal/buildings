@@ -101,13 +101,19 @@ class FeatureData:
 				day_buffer_sunset_list.clear()
 				currentdate = datapoints[i].date
 				#print (currentdate)
-
+				
 			day_buffer_list.append(datapoints[i].rowdata)
 			if(datapoints[i].sunIsShining == True):
 				day_buffer_sunrise_list.append(datapoints[i].rowdata)
 			else:
 				day_buffer_sunset_list.append(datapoints[i].rowdata)
-			  
+				
+			if(i == (len(datapoints)-1)):  #go until the last element of list. this is because for the last date currentdate wont change in regard to datapoints and we would miss the last element				
+				FeatureData.helperCalculateFeatures(currentdate, day_buffer_list,day_buffer_sunrise_list,day_buffer_sunset_list)
+				day_buffer_list.clear()
+				day_buffer_sunrise_list.clear()
+				day_buffer_sunset_list.clear()
+				currentdate = datapoints[i].date
 		
 	def helperCalculateFeatures(date, day_buffer_list,day_buffer_sunup_list,day_buffer_sundown_list):
 		
@@ -307,42 +313,89 @@ class FeatureData:
 		
 		
 	def exportToCSV(datapoints):
-		x = FeatureData(None)
+		
+		timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+
 		for point in datapoints:
-		
-			for row in point.rowdata:
-				point.date
-				point.time
-				point.rowdata
-				point.sunIsShining
-		
-				point.month
-				point.day
-				point.hour
+			for i in range(len(point.rowdata)):
+				filename = "results/"+str(timestamp)+"_datapoint_"+str(i)+".csv"
+				with open(filename ,'a') as fd:
+						
+					#writer = csv.writer(fd)
+					csv_row = []
+					
+					csv_row.append(point.date)
+					csv_row.append(point.time)
+					csv_row.append(point.rowdata[i])					
+					csv_row.append(point.season)
+					csv_row.append(point.week_of_year)
+					csv_row.append(point.quarter_of_year)
+	
+					csv_row.append(point.day_of_week)
+					csv_row.append(point.month)
 				
-				point.day_of_week
-				point.week_of_year
-				point.quarter_of_year
-				point.season
-				
-				point.heating_period
-				point.daylight_saving_time
-				
-				point.day_median
-				point.sunup_median
-				point.sundown_median
-				point.median_sunup_minus_sundown
-				point.median_sunup_to_sundown
-				point.day_median_to_sunup
-				point.day_median_to_down
-				point.day_median_minus_down
-				point.day_median_minus_sunup
-				point.day_avg
-				point.sunup_avg
-				point.sundown_avg
-				point.avg_sunup_minus_sundown
-				point.avg_minus_sunup
-				point.avg_minus_sundown
+					csv_row.append(point.day)
+					csv_row.append(point.hour)
+					csv_row.append(point.daylight_saving_time)
+					csv_row.append(point.sunIsShining)
+					csv_row.append(point.heating_period)
+
+
+
+					
+					#point.day_median
+					#point.sunup_median
+					#point.sundown_median
+					#point.median_sunup_minus_sundown
+					#point.median_sunup_to_sundown
+					#point.day_median_to_sunup
+					#point.day_median_to_down
+					#point.day_median_minus_down
+					#point.day_median_minus_sunup
+					#point.day_avg
+					#point.sunup_avg
+					#point.sundown_avg
+					#point.avg_sunup_minus_sundown
+					#point.avg_minus_sunup
+					#point.avg_minus_sundown
+					
+					date = point.date
+					
+					csv_row.append(FeatureData.dayValues.median_for_a_day[date][i])
+					csv_row.append(FeatureData.dayValues.median_for_a_day_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.median_for_a_day_sundown[date][i])
+			
+					csv_row.append(FeatureData.dayValues.average_for_a_day[date][i])
+					csv_row.append(FeatureData.dayValues.average_for_a_day_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.average_for_a_day_sundown[date][i])
+			
+					csv_row.append(FeatureData.dayValues.median_max_value_day[date][i])
+					csv_row.append(FeatureData.dayValues.median_min_value_day[date][i])
+	
+					csv_row.append(FeatureData.dayValues.avg_max_value_day[date][i])
+					csv_row.append(FeatureData.dayValues.avg_min_value_day[date][i])
+			
+					csv_row.append(FeatureData.dayValues.median_max_value_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.median_min_value_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.median_max_value_sundown[date][i])
+					csv_row.append(FeatureData.dayValues.median_min_value_sundown[date][i])
+			
+					csv_row.append(FeatureData.dayValues.avg_max_value_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.avg_min_value_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.avg_max_value_sundown[date][i])
+					csv_row.append(FeatureData.dayValues.avg_min_value_sundown[date][i])
+					
+					csv_row_string = ';'.join(map(str, csv_row)) 
+					csv_row_string = csv_row_string + "\n"
+					fd.write(csv_row_string)
+
+					#writer.writerows(map(lambda x: [x], csv_row))
+					#out.writerows(map(lambda x: [x], fin_ids))
+					#map(lambda x: [x], fin_ids)
+					#writer.writerows(csv_row)
+					
+					#fd.write(csv_row)
+					fd.close()
 			
 		
 	def cachedIsTheSunShining(mydate, mytime):
