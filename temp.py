@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 
 import csv
+import sys
 import statistics
 import ephem
 import datetime
@@ -198,6 +199,13 @@ def temperature_test():
 
 #featurecalculation.unit_test()
 
+number_of_arguments = len(sys.argv)
+if(number_of_arguments == 2):
+	filename = sys.argv[1]
+	
+else:
+	print("usage: main.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
+	filename = 'converted_BRICS.csv'
 	
 with open('converted_BRICS.csv') as csv_file_brics:	
 	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
