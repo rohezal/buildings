@@ -57,26 +57,7 @@ class FeatureData:
 		
 		self.heating_period = FeatureData.dateToMonth(self.date) #if month bigger than september or less than may?
 		self.daylight_saving_time = FeatureData.isDaylightSavingTime(self.date)
-		
-		
-
 		self.outside_temperature=INITVALUE
-		
-		self.day_median=[]
-		self.sunup_median=[]
-		self.sundown_median=[]
-		self.median_sunup_minus_sundown=[]
-		self.median_sunup_to_sundown=[]
-		self.day_median_to_sunup=[]
-		self.day_median_to_down=[]
-		self.day_median_minus_down=[]
-		self.day_median_minus_sunup=[]
-		self.day_avg = []
-		self.sunup_avg= []
-		self.sundown_avg= []
-		self.avg_sunup_minus_sundown= []
-		self.avg_minus_sunup= []
-		self.avg_minus_sundown= []
 		
 	def calculateIfSunIsShining(self):
 		self.sunIsShining=FeatureData.cachedIsTheSunShining(self.date, self.time)
@@ -107,7 +88,8 @@ class FeatureData:
 				day_buffer_sunrise_list.append(datapoints[i].rowdata)
 			else:
 				day_buffer_sunset_list.append(datapoints[i].rowdata)
-				
+
+			#just used for the last element, can be ignored for all other elements
 			if(i == (len(datapoints)-1)):  #go until the last element of list. this is because for the last date currentdate wont change in regard to datapoints and we would miss the last element				
 				FeatureData.helperCalculateFeatures(currentdate, day_buffer_list,day_buffer_sunrise_list,day_buffer_sunset_list)
 				day_buffer_list.clear()
@@ -166,6 +148,10 @@ class FeatureData:
 		FeatureData.dayValues.avg_min_value_sunup[date] = featurecalculation.lower_average_list(sunup_features)
 		FeatureData.dayValues.avg_max_value_sundown[date] = featurecalculation.upper_average_list(sundown_features)
 		FeatureData.dayValues.avg_min_value_sundown[date] = featurecalculation.lower_average_list(sundown_features)
+		
+		FeatureData.dayValues.variance_day[date] = featurecalculation.calculateVarianceForTwoDimensionaLists(day_features, FeatureData.dayValues.average_for_a_day[date])
+		FeatureData.dayValues.variance_sunup[date] = featurecalculation.calculateVarianceForTwoDimensionaLists(sunup_features, FeatureData.dayValues.average_for_a_day_sunup[date])
+		FeatureData.dayValues.variance_sundown[date] = featurecalculation.calculateVarianceForTwoDimensionaLists(sundown_features, FeatureData.dayValues.average_for_a_day_sundown[date])
 	
 		#print(day_buffer_list);
 		
@@ -449,6 +435,11 @@ class FeatureData:
 					csv_row.append(FeatureData.dayValues.avg_max_to_min_day[date][i])
 					csv_row.append(FeatureData.dayValues.avg_max_to_min_sunup[date][i])
 					csv_row.append(FeatureData.dayValues.avg_max_to_min_sundown[date][i])
+					
+#=======================VARIANCE====================================================
+					csv_row.append(FeatureData.dayValues.variance_day[date][i])
+					csv_row.append(FeatureData.dayValues.variance_sunup[date][i])
+					csv_row.append(FeatureData.dayValues.variance_sundown[date][i])
 					
 					csv_row_string = ';'.join(map(str, csv_row)) 
 					csv_row_string = csv_row_string + "\n"

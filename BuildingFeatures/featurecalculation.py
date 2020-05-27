@@ -105,6 +105,22 @@ def upper_average_list(input, offset = None):
     for element in input:
         returnlist.append(upper_average(element,offset))
     return returnlist
+
+def calculateVarianceForTwoDimensionaLists(datalists, means):
+	new_list = []
+	for i in range(len(datalists)):
+		new_list.append(calculateVariance(datalists[i], means[i]))
+
+	return new_list
+
+def calculateVariance(datalist, mean):
+	variance = 0
+
+	for element in datalist:
+		variance += (element-mean)*(element-mean)
+
+	variance = variance / len(datalist)
+	return variance
     
 
 def unit_test():

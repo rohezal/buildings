@@ -83,6 +83,11 @@ class ValueContainer:
 		self.avg_max_to_min_sunup = {}
 		self.avg_max_to_min_sundown = {}
 		
+		#variance
+		self.variance_day = {}
+		self.variance_sunup = {}
+		self.variance_sundown = {}
+		
 		
 		
 	def calculateFeaturesFromMedianAndAverage(self):
@@ -145,4 +150,4 @@ class ValueContainer:
 				newlist.append(0)
 			else:
 				newlist.append(list1[i]/list2[i])
-		return newlist			
+		return newlist
