@@ -14,6 +14,10 @@ from BuildingFeatures import SunAndCalendarData
 
 
 datalist = [] #list of csv with calculated future
+
+
+#=================USER ADJUSTABLE PART BEGINN==============================================
+
 timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
 
 number_of_arguments = len(sys.argv)
@@ -24,7 +28,7 @@ else:
 	print("usage: main.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
 	filename = 'converted_BRICS.csv'
 	
-with open('converted_BRICS.csv') as csv_file_brics:	
+with open(filename) as csv_file_brics:	
 	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
 	loadCSVDataAndFillCaches(csv_reader_brics)
 	FeatureData.calculateFeatures(datalist)
@@ -40,7 +44,7 @@ with open('converted_BRICS.csv') as csv_file_brics:
 	end = time.time()
 	print("cached exporter time " + "%.2f" % (end-start) + " seconds")
 	
-
+#=================USER ADJUSTABLE PART END==============================================
 
 #==================================helperfunctions===============================================	
 
