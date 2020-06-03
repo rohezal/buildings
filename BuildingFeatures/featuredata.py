@@ -300,7 +300,144 @@ class FeatureData:
 		for point in datapoints:
 			point.day_median = FeatureData.dayValues.median_for_a_day[point.date]
 		
+
+	def exportToCSVCached(datapoints):
+		timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
+		csv_cache = []
+		number_of_columns = len(datapoints[0].rowdata)
 		
+		for i in range(number_of_columns):
+			csv_cache.append([])
+
+		for point in datapoints:
+			for i in range(len(point.rowdata)):
+				filename = "results/"+str(timestamp)+"_datapoint_"+str(i)+".csv"
+						
+				csv_row = []
+					
+				csv_row.append(point.date)
+				csv_row.append(point.time)
+				csv_row.append(point.rowdata[i])					
+				csv_row.append(point.season)
+				csv_row.append(point.week_of_year)
+				csv_row.append(point.quarter_of_year)
+	
+				csv_row.append(point.day_of_week)
+				csv_row.append(point.month)
+				
+				csv_row.append(point.day)
+				csv_row.append(point.hour)
+				csv_row.append(point.daylight_saving_time)
+				csv_row.append(point.sunIsShining)
+				csv_row.append(point.heating_period)
+
+				date = point.date
+					
+				#medians
+				csv_row.append(FeatureData.dayValues.median_for_a_day[date][i])
+				csv_row.append(FeatureData.dayValues.median_for_a_day_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_for_a_day_sundown[date][i])
+			
+				#averages
+				csv_row.append(FeatureData.dayValues.average_for_a_day[date][i])
+				csv_row.append(FeatureData.dayValues.average_for_a_day_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.average_for_a_day_sundown[date][i])
+
+#=======================MEDIAN TO AVERAGE RELATIONS =========================================================								
+					
+				csv_row.append(FeatureData.dayValues.median_minus_average_day[date][i])
+				csv_row.append(FeatureData.dayValues.median_minus_average_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_minus_average_sundown[date][i])
+
+				csv_row.append(FeatureData.dayValues.median_to_average_day[date][i])
+				csv_row.append(FeatureData.dayValues.median_to_average_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_to_average_sundown[date][i])
+					
+		
+#=======================MIN/MAX VALUES AUF MEDIANS/AVGS=========================================================			
+			
+				#max and min values of the lowest the outer 5% median method
+					
+				#day
+				csv_row.append(FeatureData.dayValues.median_max_value_day[date][i])
+				csv_row.append(FeatureData.dayValues.median_min_value_day[date][i])
+				csv_row.append(FeatureData.dayValues.avg_max_value_day[date][i])
+				csv_row.append(FeatureData.dayValues.avg_min_value_day[date][i])
+					
+				#median sunup sundown
+				csv_row.append(FeatureData.dayValues.median_max_value_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_min_value_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_max_value_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.median_min_value_sundown[date][i])
+			
+				#average sunup sundown
+				csv_row.append(FeatureData.dayValues.avg_max_value_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.avg_min_value_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.avg_max_value_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.avg_min_value_sundown[date][i])
+					
+#=======================DISTANCES AUF MEDIANS/AVGS=========================================================					
+
+				#median distances of day to sunup / sundown values (minus)
+				csv_row.append(FeatureData.dayValues.median_sunup_minus_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.median_minus_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.median_minus_sunup[date][i])
+					
+				#median relation of day to sunup / sundown values (divides)
+				csv_row.append(FeatureData.dayValues.median_sunup_to_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.median_to_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.median_to_sunup[date][i])
+
+				#average distances of day to sunup / sundown values (minus)
+				csv_row.append(FeatureData.dayValues.average_sunup_minus_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.average_minus_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.average_minus_sunup[date][i])
+					
+				#average relation of day to sunup / sundown values (divides)
+				csv_row.append(FeatureData.dayValues.average_sunup_to_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.average_to_sundown[date][i])
+				csv_row.append(FeatureData.dayValues.average_to_sunup[date][i])
+					
+#=======================DISTANCES AUF MEDIANS/AVGS=========================================================					
+				#distance (minus) of min and max median
+				csv_row.append(FeatureData.dayValues.median_max_minus_min_day[date][i])
+				csv_row.append(FeatureData.dayValues.median_max_minus_min_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_max_minus_min_sundown[date][i])
+					
+				#relation (devide) of min and max median
+				csv_row.append(FeatureData.dayValues.median_max_to_min_day[date][i])
+				csv_row.append(FeatureData.dayValues.median_max_to_min_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.median_max_to_min_sundown[date][i])
+					
+				#distance (minus) of min and max average
+				csv_row.append(FeatureData.dayValues.avg_max_minus_min_day[date][i])
+				csv_row.append(FeatureData.dayValues.avg_max_minus_min_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.avg_max_minus_min_sundown[date][i])
+
+				#relation (devide) of min and max average
+				csv_row.append(FeatureData.dayValues.avg_max_to_min_day[date][i])
+				csv_row.append(FeatureData.dayValues.avg_max_to_min_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.avg_max_to_min_sundown[date][i])
+					
+#=======================VARIANCE====================================================
+				csv_row.append(FeatureData.dayValues.variance_day[date][i])
+				csv_row.append(FeatureData.dayValues.variance_sunup[date][i])
+				csv_row.append(FeatureData.dayValues.variance_sundown[date][i])
+					
+				csv_row_string = ';'.join(map(str, csv_row)) 
+				csv_row_string = csv_row_string + "\n"
+				csv_cache[i].append(csv_row_string)
+
+		for i in range(len(csv_cache)):
+			filename = "results/"+str(timestamp)+"_datapoint_"+str(i)+".csv"
+			
+			with open(filename ,'a') as fd:
+				
+				fd.write( "".join(csv_cache[i]))
+				fd.close()
+
+
+
 	def exportToCSV(datapoints):
 		timestamp = datetime.datetime.now().strftime("%Y_%m_%d_%H_%M_%S")
 

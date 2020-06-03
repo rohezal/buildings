@@ -5,25 +5,45 @@ import sys
 import statistics
 import ephem
 import datetime
+import time
 from ephem import cities
-#import featurecalculation
-#import featuredata
 
 import BuildingFeatures
 from BuildingFeatures import FeatureData
 from BuildingFeatures import SunAndCalendarData
 
-#from BuildingFeatures import featuredata 
-#from BuildingFeatures import SunAndCalendarData 
-#from BuildingFeatures import FeatureData
 
 datalist = [] #list of csv with calculated future
 timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
 
-#def loadCSVAndComputeSunrise(filename):
-
-#def calculateFeatures(datapoints):
+number_of_arguments = len(sys.argv)
+if(number_of_arguments == 2):
+	filename = sys.argv[1]
 	
+else:
+	print("usage: main.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
+	filename = 'converted_BRICS.csv'
+	
+with open('converted_BRICS.csv') as csv_file_brics:	
+	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
+	loadCSVDataAndFillCaches(csv_reader_brics)
+	FeatureData.calculateFeatures(datalist)
+	print("starting exporter")
+	start = time.time()
+	FeatureData.exportToCSV(datalist)
+	end = time.time()
+	print("exporter time " + "%.2f" % (end-start) + " seconds")
+	
+	print("starting cached exporter")
+	start = time.time()
+	FeatureData.exportToCSVCached(datalist)
+	end = time.time()
+	print("cached exporter time " + "%.2f" % (end-start) + " seconds")
+	
+
+
+#==================================helperfunctions===============================================	
+
 def median_for_lists(input):
 	returnlist = []
 
@@ -192,25 +212,3 @@ def temperature_test():
 		print("Test")
 		print(SunAndCalendarData.sunrises["2012/1/1"] < SunAndCalendarData.sunrises['big'] )
 		print(SunAndCalendarData.sunrises["2012/1/1"] < SunAndCalendarData.sunrises['small'] )
-		
-		
-		
-#temperature_test()	
-
-#featurecalculation.unit_test()
-
-number_of_arguments = len(sys.argv)
-if(number_of_arguments == 2):
-	filename = sys.argv[1]
-	
-else:
-	print("usage: main.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
-	filename = 'converted_BRICS.csv'
-	
-with open('converted_BRICS.csv') as csv_file_brics:	
-	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
-	loadCSVDataAndFillCaches(csv_reader_brics)
-	FeatureData.calculateFeatures(datalist)
-	FeatureData.exportToCSV(datalist)
-	
-
