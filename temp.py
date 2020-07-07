@@ -16,36 +16,6 @@ from BuildingFeatures import SunAndCalendarData
 datalist = [] #list of csv with calculated future
 
 
-#=================USER ADJUSTABLE PART BEGINN==============================================
-
-timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
-
-number_of_arguments = len(sys.argv)
-if(number_of_arguments == 2):
-	filename = sys.argv[1]
-	
-else:
-	print("usage: main.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
-	filename = 'converted_BRICS.csv'
-	
-with open(filename) as csv_file_brics:	
-	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
-	loadCSVDataAndFillCaches(csv_reader_brics)
-	FeatureData.calculateFeatures(datalist)
-	print("starting exporter")
-	start = time.time()
-	FeatureData.exportToCSV(datalist)
-	end = time.time()
-	print("exporter time " + "%.2f" % (end-start) + " seconds")
-	
-	print("starting cached exporter")
-	start = time.time()
-	FeatureData.exportToCSVCached(datalist)
-	end = time.time()
-	print("cached exporter time " + "%.2f" % (end-start) + " seconds")
-	
-#=================USER ADJUSTABLE PART END==============================================
-
 #==================================helperfunctions===============================================	
 
 def median_for_lists(input):
@@ -216,3 +186,33 @@ def temperature_test():
 		print("Test")
 		print(SunAndCalendarData.sunrises["2012/1/1"] < SunAndCalendarData.sunrises['big'] )
 		print(SunAndCalendarData.sunrises["2012/1/1"] < SunAndCalendarData.sunrises['small'] )
+
+#=================USER ADJUSTABLE PART BEGINN==============================================
+
+timezone_delta = 1 #relative to UTC which is GMT (1 hour before Berlin)
+
+number_of_arguments = len(sys.argv)
+if(number_of_arguments == 2):
+	filename = sys.argv[1]
+	
+else:
+	print("usage: main.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
+	filename = 'converted_BRICS.csv'
+	
+with open(filename) as csv_file_brics:	
+	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',', quoting=csv.QUOTE_NONNUMERIC)
+	loadCSVDataAndFillCaches(csv_reader_brics)
+	FeatureData.calculateFeatures(datalist)
+	print("starting exporter")
+	start = time.time()
+	FeatureData.exportToCSV(datalist)
+	end = time.time()
+	print("exporter time " + "%.2f" % (end-start) + " seconds")
+	
+	print("starting cached exporter")
+	start = time.time()
+	FeatureData.exportToCSVCached(datalist)
+	end = time.time()
+	print("cached exporter time " + "%.2f" % (end-start) + " seconds")
+	
+#=================USER ADJUSTABLE PART END==============================================
