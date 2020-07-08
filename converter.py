@@ -15,26 +15,25 @@ if(number_of_arguments == 2):
 	
 else:
 	print("usage: converter.py name_of_the_file.csv. Using now converted_BRICS.csv as a default file")
-	filename = 'converted_BRICS.csv'	
+	filename = 'BRICS_orignal_.csv'	
 
-outfile = open('converted_'+filename, 'w')
+outfile = open('converted_'+filename, 'w', newline="")
 csvwriter = csv.writer(outfile )
 
-with open(filename) as csv_file_brics:    
-    
-    csv_reader_brics = csv.reader(csv_file_brics, delimiter=',')
-    for row in csv_reader_brics:
-        newrow = []
-        for element in row:
-            if(":" not in element):
-                element = float(element.replace(',', '.'))
-            else:
-                element = "\"" + element + "\""
-            newrow.append(element)                
-                
-        #print(row)
-        #print(newrow)                
-        #print("=============")                
-        #print(row)    
-        csvwriter.writerow(newrow)                                
+with open(filename, newline="") as csv_file_brics:	
+	
+	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',')
+	for row in csv_reader_brics:
+		newrow = []
+		
+		if(len(row) > 0):
+			if((row[0][0]).isnumeric()):
+				for element in row:
+					if(":" not in element):
+						element = float(element.replace(',', '.'))
+					else:
+						element = "\"" + element + "\""
+					newrow.append(element)				
+		if(len(newrow) > 0):
+			csvwriter.writerow(newrow)								
 outfile.close
