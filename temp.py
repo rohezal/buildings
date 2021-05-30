@@ -211,7 +211,7 @@ with open(filename) as csv_file_brics:
 	
 	print("starting cached exporter")
 	start = time.time()
-	FeatureData.exportToCSVCached(datalist)
+	#FeatureData.exportToCSVCached(datalist)
 	end = time.time()
 	print("cached exporter time " + "%.2f" % (end-start) + " seconds")
 	

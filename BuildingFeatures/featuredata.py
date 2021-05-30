@@ -429,7 +429,7 @@ class FeatureData:
 				csv_cache[i].append(csv_row_string)
 
 		for i in range(len(csv_cache)):
-			filename = "results/"+str(timestamp)+"_datapoint_"+str(i)+".csv"
+			filename = "results/"+str(i)+"_"+str(timestamp)+"_datapoint_"+str(i)+".csv"
 			
 			with open(filename ,'a') as fd:
 				
@@ -443,7 +443,7 @@ class FeatureData:
 
 		for point in datapoints:
 			for i in range(len(point.rowdata)):
-				filename = "results/"+str(timestamp)+"_datapoint_"+str(i)+".csv"
+				filename = "results/"+str(i)+"_"+str(timestamp)+"_datapoint_"+str(i)+".csv"
 				with open(filename ,'a') as fd:
 						
 					#writer = csv.writer(fd)
