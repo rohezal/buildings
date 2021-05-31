@@ -34,8 +34,8 @@ def compare(item1, item2):
 	else:
 		return 0
 
-if(len(sys.argv) != 2):
-	print("Usage: convert_results.py foldername")
+if(len(sys.argv) != 3):
+	print("Usage: convert_results.py foldername sourcefile")
 	sys.exit(1)
 
 path = sys.argv[1]
@@ -55,8 +55,33 @@ with open(path+"/"+files[0], newline='') as csvfile:
 		break
 csvfile.close()	
 
+#create an extra csv file for each feature
 for i in range(number_of_features):
 	ram_csv_files.append([])
+
+
+
+#read in the header
+original_header = []
+with open(sys.argv[2], newline='') as csvfile:
+	line_reader_counter = 0
+	reader = csv.reader(csvfile, delimiter=';', quotechar='|')
+	for row in reader:
+		original_header.append(row)
+		line_reader_counter = line_reader_counter+1
+		if(line_reader_counter > 3):
+			break
+csvfile.close()		
+
+
+headers = []	
+for i in range(number_of_features):
+	headers.append([])
+	headers[-1].append(original_header[0])
+
+print (original_header)
+sys.exit(0)
+	
 	
 print(len(ram_csv_files))	
 
@@ -71,6 +96,7 @@ for file in files:
 			if(counter == 0): # create a new list for each row of a feature
 				for ram_csv in ram_csv_files:
 					ram_csv.append([])
+					ram_csv[-1].append(row[0] + " " + row[1] )
 		
 			featurecounter = 0
 			for element in row:
@@ -88,6 +114,7 @@ for file in files:
 
 	
 counter = 0	
+
 for file in ram_csv_files:
 	with open("converted_results/"+str(counter)+".csv", "w") as resultFile:
 		wr = csv.writer(resultFile)
