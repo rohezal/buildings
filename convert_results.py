@@ -39,6 +39,7 @@ if(len(sys.argv) != 3):
 	sys.exit(1)
 
 path = sys.argv[1]
+sourcefile = sys.argv[2]
 files = os.listdir(path) # returns list	
 #files.sort(key=compare)
 files = sorted(files,key=functools.cmp_to_key(compare))
@@ -63,7 +64,7 @@ for i in range(number_of_features):
 
 #read in the header
 original_header = []
-with open(sys.argv[2], newline='') as csvfile:
+with open(sourcefile, newline='') as csvfile:
 	line_reader_counter = 0
 	reader = csv.reader(csvfile, delimiter=',', quotechar='|')
 	for row in reader:
@@ -78,9 +79,15 @@ csvfile.close()
 
 headers = []	
 ids = []
+sinfos = [] # short infos
 
 for element in original_header[1]:
 	ids.append(element)
+	
+for element in original_header[2]:
+	sinfos.append(element)	
+	
+
 	
 for i in range(number_of_features):
 	headers.append([])
@@ -93,16 +100,20 @@ for i in range(number_of_features):
 			headers[-1][1].append(id)
 			continue
 		headers[-1][1].append(id + "_feature" + str(i)) 
-		
-		
-	
-	
-	
 
-print(number_of_features)
-print (headers[0])
-sys.exit(0)
-	
+	headers[-1].append([]) #ids IGS_BRICS_3210 ISP01 LA0
+	skip_first = False
+	for element in sinfos:
+		if(skip_first == False):
+			skip_first = True
+			headers[-1][2].append(element)
+			continue
+		headers[-1][2].append(element + "_feature" + str(i)) 		
+		
+	headers[-1].append(original_header[3]) #long info
+	headers[-1].append(original_header[4]) #minimum
+	headers[-1].append(original_header[5]) #maximum
+	headers[-1].append(original_header[6]) #unit
 	
 print(len(ram_csv_files))	
 
@@ -137,8 +148,9 @@ for file in files:
 counter = 0	
 
 for file in ram_csv_files:
-	with open("converted_results/"+str(counter)+".csv", "w") as resultFile:
+	with open("converted_results/"+sourcefile.split(".")[0]+"_feature"+str(counter)+".csv", "w") as resultFile:
 		wr = csv.writer(resultFile)
+		wr.writerows(headers[counter])
 		wr.writerows(ram_csv_files[counter])
 		#for row in ram_csv_files[counter]:
 			 #wr.writerow(row)  
