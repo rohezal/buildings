@@ -65,21 +65,42 @@ for i in range(number_of_features):
 original_header = []
 with open(sys.argv[2], newline='') as csvfile:
 	line_reader_counter = 0
-	reader = csv.reader(csvfile, delimiter=';', quotechar='|')
+	reader = csv.reader(csvfile, delimiter=',', quotechar='|')
 	for row in reader:
-		original_header.append(row)
+		original_header.append([])
+		for element in row:
+			original_header[-1].append(element)
 		line_reader_counter = line_reader_counter+1
-		if(line_reader_counter > 3):
+		if(line_reader_counter > 6):
 			break
 csvfile.close()		
 
 
 headers = []	
+ids = []
+
+for element in original_header[1]:
+	ids.append(element)
+	
 for i in range(number_of_features):
 	headers.append([])
-	headers[-1].append(original_header[0])
+	headers[-1].append(original_header[0]) #record software  synavision CSV format 2.0 DE - encoding: ISO-8859-1
+	skip_first = False
+	headers[-1].append([]) #ids IGS_BRICS_3210 ISP01 LA0
+	for id in ids:
+		if(skip_first == False):
+			skip_first = True
+			headers[-1][1].append(id)
+			continue
+		headers[-1][1].append(id + "_feature" + str(i)) 
+		
+		
+	
+	
+	
 
-print (original_header)
+print(number_of_features)
+print (headers[0])
 sys.exit(0)
 	
 	
