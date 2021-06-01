@@ -10,6 +10,13 @@ import sys
 import os
 import functools
 
+feature_names = ["date", "time", "original_value", "season", "week_of_year", "quarter_of_year", "day_of_week", "month", "day", "hour", "daylight_saving_time", "sunIsShining", "heating_period", "median_for_a_day", "median_for_a_day_sunup", "median_for_a_day_sundown", "average_for_a_day", "average_for_a_day_sunup", "average_for_a_day_sundown", "median_minus_average_day", "median_minus_average_sunup", "median_minus_average_sundown", "median_to_average_day", "median_to_average_sunup", "median_to_average_sundown", "median_max_value_day", "median_min_value_day", "avg_max_value_day", "avg_min_value_day", "median_max_value_sunup", "median_min_value_sunup", "median_max_value_sundown", "median_min_value_sundown", "avg_max_value_sunup", "avg_min_value_sunup", "avg_max_value_sundown", "avg_min_value_sundown", "median_sunup_minus_sundown", "median_minus_sundown", "median_minus_sunup", "median_sunup_to_sundown", "median_to_sundown", "median_to_sunup", "average_sunup_minus_sundown", "average_minus_sundown", "average_minus_sunup", "average_sunup_to_sundown", "average_to_sundown", "average_to_sunup", "median_max_minus_min_day", "median_max_minus_min_sunup", "median_max_minus_min_sundown", "median_max_to_min_day", "median_max_to_min_sunup", "median_max_to_min_sundown", "avg_max_minus_min_day", "avg_max_minus_min_sunup", "avg_max_minus_min_sundown", "avg_max_to_min_day", "avg_max_to_min_sunup", "avg_max_to_min_sundown", "variance_day", "variance_sunup", "variance_sundown"]
+
+def number_to_feature(number):
+	return feature_names[number];
+	
+	
+
 def compare(item1, item2):
 	
 	number1 = 0
@@ -99,7 +106,7 @@ for i in range(number_of_features):
 			skip_first = True
 			headers[-1][1].append(id)
 			continue
-		headers[-1][1].append(id + "_feature" + str(i)) 
+		headers[-1][1].append(id + "_" + number_to_feature(i)) 
 
 	headers[-1].append([]) #ids IGS_BRICS_3210 ISP01 LA0
 	skip_first = False
@@ -108,7 +115,7 @@ for i in range(number_of_features):
 			skip_first = True
 			headers[-1][2].append(element)
 			continue
-		headers[-1][2].append(element + "_feature" + str(i)) 		
+		headers[-1][2].append(element + "_" + number_to_feature(i)) 		
 		
 	headers[-1].append(original_header[3]) #long info
 	headers[-1].append(original_header[4]) #minimum
@@ -148,14 +155,19 @@ for file in files:
 counter = 0	
 
 for file in ram_csv_files:
-	with open("converted_results/"+sourcefile.split(".")[0]+"_feature"+str(counter)+".csv", "w") as resultFile:
+	
+	if(counter == 0 or counter == 1 or counter == 2): #remove time, date and original data point from the feature files
+		counter = counter+1		   
+		continue
+	
+	with open("converted_results/"+sourcefile.split(".")[0]+"_"+number_to_feature(counter)+".csv", "w") as resultFile:
 		wr = csv.writer(resultFile)
 		wr.writerows(headers[counter])
 		wr.writerows(ram_csv_files[counter])
 		#for row in ram_csv_files[counter]:
 			 #wr.writerow(row)  
 			 #print(row)
-	counter = counter+1		   
+	counter = counter+1
 	resultFile.close()		   
 	
 	#for row in reader:
