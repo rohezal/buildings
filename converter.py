@@ -20,17 +20,25 @@ else:
 outfile = open('converted_'+filename, 'w', newline="")
 csvwriter = csv.writer(outfile )
 
-with open(filename, newline="") as csv_file_brics:	
+with open(filename, newline="", encoding='ISO-8859-1') as csv_file_brics:	
 	
-	csv_reader_brics = csv.reader(csv_file_brics, delimiter=',')
+	csv_reader_brics = csv.reader(csv_file_brics, delimiter=';')
 	for row in csv_reader_brics:
 		newrow = []
 		
 		if(len(row) > 0):
 			if((row[0][0]).isnumeric()):
 				for element in row:
-					if(":" not in element):
-						element = float(element.replace(',', '.'))
+					if (element == "" or element == "MV"):
+						element="NaN"		
+
+					elif(":" not in element):
+						try:
+							element = float(element.replace(',', '.'))
+						except Exception as e:
+							print("Element: " + element)							
+							print(e)
+							sys.exit(1)
 					else:
 						element = "\"" + element + "\""
 					newrow.append(element)				

@@ -56,7 +56,7 @@ ram_csv_files = []
 
 number_of_features = 0
 
-with open(path+"/"+files[0], newline='') as csvfile:
+with open(path+"/"+files[0], newline='', encoding='ISO-8859-1') as csvfile:
 	reader = csv.reader(csvfile, delimiter=';', quotechar='|')
 	for row in reader:
 		number_of_features = len(row)
@@ -71,7 +71,7 @@ for i in range(number_of_features):
 
 #read in the header
 original_header = []
-with open(sourcefile, newline='') as csvfile:
+with open(sourcefile, newline='', encoding='ISO-8859-1') as csvfile:
 	line_reader_counter = 0
 	reader = csv.reader(csvfile, delimiter=',', quotechar='|')
 	for row in reader:
@@ -126,7 +126,7 @@ print(len(ram_csv_files))
 
 counter = 0
 for file in files:
-	with open(path+"/"+file, newline='') as csvfile:
+	with open(path+"/"+file, newline='', encoding='ISO-8859-1') as csvfile:
 		print(file)								
 		reader = csv.reader(csvfile, delimiter=';', quotechar='|')
 
@@ -160,7 +160,7 @@ for file in ram_csv_files:
 		counter = counter+1		   
 		continue
 	
-	with open("converted_results/"+sourcefile.split(".")[0]+"_"+number_to_feature(counter)+".csv", "w") as resultFile:
+	with open("converted_results/"+sourcefile.split(".")[0]+"_"+number_to_feature(counter)+".csv", "w", encoding='ISO-8859-1') as resultFile:
 		wr = csv.writer(resultFile)
 		wr.writerows(headers[counter])
 		wr.writerows(ram_csv_files[counter])
